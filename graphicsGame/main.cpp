@@ -8,10 +8,13 @@
 #include <QPushButton>
 #include <QSqlDatabase>
 #include <QCoreApplication>
+#include <QPushButton>
 
-
+#include "loginpage.h"
 #include "game1scene.h"
 #include "signupdialog.h"
+
+#include "profile.h"
 
 
 int  main(int argc, char **argv)
@@ -24,12 +27,17 @@ int  main(int argc, char **argv)
 
     QPushButton *loginButton = new QPushButton("Login", loginWindow);
     QPushButton *signupButton = new QPushButton("Sign Up", loginWindow);
+    QPushButton *playAsGuestButton = new QPushButton("play as guest", loginWindow);
+
+
     loginButton->setGeometry(100, 100, 100, 30);
     signupButton->setGeometry(100, 140, 100, 30);
+    playAsGuestButton->setGeometry(100, 180, 100, 30);
 
     // Show the login window
     loginWindow->resize(300, 300);
     loginWindow->show();
+
 
     SignUpDialog signUpDialog;
     signUpDialog.setupDatabase();
@@ -46,13 +54,20 @@ int  main(int argc, char **argv)
 
     // Slots to handle button clicks should close login window and show game view
     QObject::connect(loginButton, &QPushButton::clicked, [&](){
+        loginPage* myLoginPage = new loginPage();
+        myLoginPage->show();
         loginWindow->close();
-        view_obj->show();
+        // view_obj->show();
     });
+
     QObject::connect(signupButton, &QPushButton::clicked, [&](){
         signUpDialog.setupDatabase(); // Assuming setupDatabase is safe to call multiple times
         signUpDialog.exec(); // Show the sign-up dialog modally
         //view_obj->show();
+    });
+
+    QObject::connect(playAsGuestButton, &QPushButton::clicked, [&](){
+         view_obj->show();
     });
 
 

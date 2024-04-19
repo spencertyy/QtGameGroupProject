@@ -1,10 +1,12 @@
 #ifndef GAME1SCENE_H
 #define GAME1SCENE_H
 
-#include <QGraphicsScene>
-#include <QGraphicsPixmapItem>
-#include "bucket.h"
+//#include <QGraphicsScene>
+//#include <QGraphicsPixmapItem>
+#include "cloud.h"
 #include "droplet.h"
+#include "bucket.h"
+
 
 
 class game1scene : public QGraphicsScene

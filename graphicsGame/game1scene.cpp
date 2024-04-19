@@ -1,6 +1,5 @@
 #include "game1scene.h"
-#include "cloud.h"
-#include "droplet.h"
+
 
 game1scene::game1scene(QObject *parent):QGraphicsScene(parent) {
 

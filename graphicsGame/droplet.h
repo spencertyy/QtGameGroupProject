@@ -5,7 +5,7 @@
 #include <QObject>
 #include <QGraphicsItem>
 #include <QTimer>
-#include "bucket.h"
+
 
 class droplet:public QObject,public QGraphicsPixmapItem
 {

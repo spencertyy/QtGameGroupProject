@@ -6,10 +6,21 @@
 #include <QDateEdit>
 #include <QComboBox>
 #include <QPushButton>
+#include <QValidator>
+#include <QFormLayout>
+#include <QVBoxLayout>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QDebug>
 #include <QLabel>
-#include <QPushButton>
 #include <QFileDialog>
 #include <QPixmap>
+#include <QString>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+#include <QMessageBox>
+
+
 
 class SignUpDialog : public QDialog {
 public:
@@ -25,11 +36,14 @@ public:
     QPushButton *cancelButton;
     QLabel* profilePictureLabel;
     QPushButton* uploadButton;
+    QValidator *passwordValidator;
+
 
     void setupUI();
     void connectSignals();
     void setupDatabase();
     void onUploadButtonClicked();
+    void checkPasswordValidity(const QString &password);
 
 
 };

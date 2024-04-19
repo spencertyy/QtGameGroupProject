@@ -1,14 +1,6 @@
 #include "SignUpDialog.h"
-#include <QFormLayout>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QDebug>
-#include <QLabel>
-#include <QPushButton>
-#include <QFileDialog>
-#include <QPixmap>
+
+
 
 SignUpDialog::SignUpDialog(QWidget *parent) : QDialog(parent) {
     setupUI();
@@ -36,8 +28,13 @@ void SignUpDialog::setupUI() {
     formLayout->addRow("Last Name:", lastNameLineEdit);
     formLayout->addRow("Date of Birth:", dobDateEdit);
     formLayout->addRow("Gender:", genderComboBox);
-    formLayout->addRow("Username:", usernameLineEdit);
+    formLayout->addRow("User Name:", usernameLineEdit);
     formLayout->addRow("Password:", passwordLineEdit);
+
+    passwordLineEdit = new QLineEdit(this);
+    passwordLineEdit->setEchoMode(QLineEdit::Password);
+
+
 
     // Profile Picture
     profilePictureLabel = new QLabel(this);
@@ -64,7 +61,8 @@ void SignUpDialog::connectSignals() {
     connect(submitButton, &QPushButton::clicked, this, &SignUpDialog::accept);
     connect(cancelButton, &QPushButton::clicked, this, &SignUpDialog::reject);
     connect(uploadButton, &QPushButton::clicked, this, &SignUpDialog::onUploadButtonClicked);
-
+    connect(passwordLineEdit, &QLineEdit::textChanged, this, &SignUpDialog::checkPasswordValidity);
+    //connect(passwordLineEdit, &QLineEdit::editingFinished, this,&SignUpDialog::checkPasswordValidity);
 }
 void SignUpDialog::onUploadButtonClicked() {
     QString fileName = QFileDialog::getOpenFileName(this, "Open Image", "", "Image Files (*.png *.jpg *.bmp)");
@@ -90,4 +88,33 @@ void SignUpDialog::setupDatabase() {
                "lastName TEXT, "
                "dateOfBirth DATE, "
                "gender TEXT)");
+}
+// And implement the slot to check validity
+void SignUpDialog::checkPasswordValidity(const QString &password) {
+    // First, create a non-const copy of the password
+    QString nonConstPassword = password;
+
+    // Define the regular expression for the password
+    QRegularExpression passwordRegex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$");
+
+    // Assume the passwordValidator is correctly set up somewhere in the class
+    QRegularExpressionValidator *passwordValidator = new QRegularExpressionValidator(passwordRegex, this);
+
+    passwordLineEdit->setValidator(passwordValidator);
+
+    // Set the position to zero
+    int pos = 0;
+    // Now use the non-const password copy for validation
+    if(passwordValidator->validate(nonConstPassword, pos) != QValidator::Acceptable) {
+        // Inform user about the invalid password
+        QMessageBox::warning(this, "Invalid Password", "Password must be at least 8 characters long and include uppercase letters, lowercase letters, and numbers.");
+        // Update the UI to reflect the invalid state, like changing the color of the line edit
+        passwordLineEdit->setStyleSheet("QLineEdit { border: 1px solid red; }");
+    } else {
+        // If the password is valid, reset any warning styles you might have set
+        passwordLineEdit->setStyleSheet("");
+    }
+
+    // Clean up the validator to prevent memory leak
+    delete passwordValidator;
 }

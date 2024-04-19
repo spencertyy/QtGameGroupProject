@@ -1,4 +1,5 @@
 #include "droplet.h"
+#include "bucket.h"
 
 droplet::droplet(QGraphicsItem *parent) : QObject(), QGraphicsPixmapItem(parent) {
 
