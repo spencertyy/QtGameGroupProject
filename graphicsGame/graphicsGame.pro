@@ -8,7 +8,6 @@ SOURCES += \
     signupdialog.cpp
 
 RESOURCES += \
-    background.qrc \
     projectRes.qrc \
 
 HEADERS += \
@@ -28,3 +27,5 @@ QMAKE_LFLAGS += -v
 FORMS += \
     loginpage.ui \
     profile.ui
+
+DISTFILES +=

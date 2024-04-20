@@ -2,6 +2,8 @@
 #define PROFILE_H
 
 #include <QWidget>
+#include <QPushButton>
+#include "game1scene.h"
 
 namespace Ui {
 class profile;
@@ -15,8 +17,12 @@ public:
     explicit profile(QWidget *parent = nullptr);
     ~profile();
 
-private:
     Ui::profile *ui;
+    QPushButton *gameStartBtn; // Ensure this is properly connected to the UI
+public slots:
+    void onGameStartBtnClicked();
+
+
 };
 
 #endif // PROFILE_H

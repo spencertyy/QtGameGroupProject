@@ -22,6 +22,9 @@ void loginPage::onLoginButtonClicked(){
 
     profilePage->show();
     myLoginPage->close();
+
+    //TODO need to write the code for check if the user name and the passwork is correct
+
     // if( (true)) { // Replace true with actual condition check
     //     profilePage->show(); // Show the profile page
     //     profilePage->close(); // Close the login window

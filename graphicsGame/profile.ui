@@ -36,7 +36,7 @@
     <string>Score History</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="gameStartBtn">
    <property name="geometry">
     <rect>
      <x>250</x>

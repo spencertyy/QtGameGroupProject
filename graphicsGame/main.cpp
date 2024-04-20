@@ -13,6 +13,7 @@
 #include "loginpage.h"
 #include "game1scene.h"
 #include "signupdialog.h"
+#include "ui_profile.h"
 
 #include "profile.h"
 
@@ -39,9 +40,6 @@ int  main(int argc, char **argv)
     loginWindow->show();
 
 
-    SignUpDialog signUpDialog;
-    signUpDialog.setupDatabase();
-    //signUpDialog.exec();
 
     game1scene *scene = new game1scene();
     QGraphicsView* view_obj = new QGraphicsView(scene);
@@ -61,8 +59,9 @@ int  main(int argc, char **argv)
     });
 
     QObject::connect(signupButton, &QPushButton::clicked, [&](){
-        signUpDialog.setupDatabase(); // Assuming setupDatabase is safe to call multiple times
-        signUpDialog.exec(); // Show the sign-up dialog modally
+        signupdialog* signUpDialog = new signupdialog();
+        signUpDialog->setupDatabase(); // Assuming setupDatabase is safe to call multiple times
+        signUpDialog->exec(); // Show the sign-up dialog modally
         //view_obj->show();
     });
 

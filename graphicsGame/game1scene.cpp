@@ -1,11 +1,12 @@
 #include "game1scene.h"
+#include "cloud.h"
+#include "droplet.h"
+#include "bucket.h"
 
 
 game1scene::game1scene(QObject *parent):QGraphicsScene(parent) {
 
     setBackgroundBrush(QBrush(QImage(":/new/prefix1/images/beijing.jpg").scaledToHeight(512) .scaledToWidth(910)));
-
-    // setBackgroundBrush(QPixmap(":/new/prefix1/images/background.jpg"));
 
     setSceneRect(0,0,908, 510);
 
@@ -42,11 +43,5 @@ game1scene::game1scene(QObject *parent):QGraphicsScene(parent) {
     });
 
      timer->start(200);//根据需要进行调整
-
-
-   // bucket *item1 = new bucket();
-
-    // item1->setPos(200,200);
-
-    // addItem(item1);
 }
+
