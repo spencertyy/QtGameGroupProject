@@ -33,6 +33,7 @@
 
 # build files
 graphicsGame/build/
+graphicsGame/graphicsGame.pro.user
 
 # mac os stuff
 .DS_Store
