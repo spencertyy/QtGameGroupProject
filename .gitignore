@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# build files
+graphicsGame/build/
+
+# mac os stuff
+.DS_Store
