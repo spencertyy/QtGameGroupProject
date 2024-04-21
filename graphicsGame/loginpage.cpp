@@ -2,13 +2,14 @@
 #include "ui_loginpage.h"
 #include "profile.h"
 
-
-loginPage::loginPage(QWidget *parent)
+loginPage::loginPage(UserManager *userManager, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::loginPage)
 {
     ui->setupUi(this);
     connect(ui->pushButton,&QPushButton::clicked, this, &loginPage::onLoginButtonClicked);
+    connect(this, &loginPage::loginAttempt, userManager, &UserManager::authenticateUser);
+    //KT: when login wiget it created, associate it with the usermanager process the data
 
 }
 
@@ -17,11 +18,23 @@ loginPage::~loginPage()
     delete ui;
 }
 void loginPage::onLoginButtonClicked(){
-    profile* profilePage = new profile();
-    loginPage* myLoginPage = new loginPage();
+    qDebug() << "user clicked loginButon";
 
-    profilePage->show();
-    myLoginPage->close();
+
+    //KT: pull data out of form
+    QString userName = ui->lineEdit->text();
+    QString password = ui->lineEdit_2->text();
+
+    //KT: emit signal for userHandler to hear
+    emit loginAttempt(userName, password);
+
+    qDebug() << "Signal was emitted";
+
+
+    // profile* profilePage = new profile();
+    // loginPage* myLoginPage = new loginPage();
+    // profilePage->show();
+    // myLoginPage->close();
 
     //TODO need to write the code for check if the user name and the passwork is correct
 

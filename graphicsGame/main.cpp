@@ -16,7 +16,7 @@
 #include "ui_profile.h"
 
 #include "profile.h"
-
+#include "usermanager.h"
 
 int  main(int argc, char **argv)
 {
@@ -50,9 +50,12 @@ int  main(int argc, char **argv)
     view_obj->setVerticalScrollBarPolicy((Qt::ScrollBarAlwaysOff));
     // view_obj->show();
 
+
+    UserManager* userManager = new UserManager();
+
     // Slots to handle button clicks should close login window and show game view
     QObject::connect(loginButton, &QPushButton::clicked, [&](){
-        loginPage* myLoginPage = new loginPage();
+        loginPage* myLoginPage = new loginPage(userManager);
         myLoginPage->show();
         loginWindow->close();
         // view_obj->show();
@@ -68,8 +71,5 @@ int  main(int argc, char **argv)
     QObject::connect(playAsGuestButton, &QPushButton::clicked, [&](){
          view_obj->show();
     });
-
-
-
     return app.exec();
 }

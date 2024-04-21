@@ -5,7 +5,8 @@ SOURCES += \
     loginpage.cpp \
     main.cpp \
     profile.cpp \
-    signupdialog.cpp
+    signupdialog.cpp \
+    usermanager.cpp \
 
 RESOURCES += \
     projectRes.qrc \
@@ -18,6 +19,7 @@ HEADERS += \
     loginpage.h \
     profile.h \
     signupdialog.h \
+    usermanager.h \
 
 QT += core gui widgets
 QT += sql
