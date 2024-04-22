@@ -2,6 +2,8 @@ SOURCES += \
     bucket.cpp \
     droplet.cpp \
     game1scene.cpp \
+    gameoverdialog.cpp \
+    history.cpp \
     loginpage.cpp \
     main.cpp \
     profile.cpp \
@@ -18,6 +20,8 @@ HEADERS += \
     cloud.h \
     droplet.h \
     game1scene.h \
+    gameoverdialog.h \
+    history.h \
     loginpage.h \
     profile.h \
     signupdialog.h \
@@ -30,6 +34,7 @@ QT += multimedia
 QMAKE_LFLAGS += -v
 
 FORMS += \
+    history.ui \
     loginpage.ui \
     profile.ui
 

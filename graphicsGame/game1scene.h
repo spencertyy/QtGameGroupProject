@@ -9,10 +9,11 @@
 #include <QAudioOutput>
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QWidget>
+#include <QGraphicsView>
+
 #include "bucket.h"
 #include "droplet.h"
-
-
 
 class game1scene : public QGraphicsScene
 {
@@ -28,6 +29,10 @@ public:
     void loosingGame();
     int gameLevel(std::string level);
     void updateLabels();
+    void onGameEnded(bool won);
+    void restartGame();
+    void returnToProfile();
+    void viewHistory();
 
     static int windowWidth;
     static int windowHeight;
@@ -41,8 +46,6 @@ public:
 signals:
     void loosingSignal(int value);
     void winningSignal(int value);
-
-
 };
 
 #endif // GAME1SCENE_H

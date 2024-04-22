@@ -9,7 +9,7 @@ UserManager::UserManager(QObject *parent) : QObject(parent) {
     usernamesNpasswords.insert("Charlie", "efg");
 
     // Add sample user information data for each user
-    UserInfo* adminInfo = new UserInfo("admin", "Admin", "Adminson", QDate(1990, 1, 1), {90, 85, 95});
+    UserInfo* adminInfo = new UserInfo("admin", "Admin", "Adminson", QDate(1990, 4, 22), {90, 85, 95});
     UserInfo* bobInfo = new UserInfo("Bob", "Bob", "Smith", QDate(1985, 5, 15), {70, 75, 80});
     UserInfo* charlieInfo = new UserInfo("Charlie", "Charlie", "Brown", QDate(1978, 9, 30), {80, 85, 90});
 
