@@ -9,10 +9,11 @@
 #include <QAudioOutput>
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QWidget>
+#include <QGraphicsView>
+
 #include "bucket.h"
 #include "droplet.h"
-
-
 
 class game1scene : public QGraphicsScene
 {

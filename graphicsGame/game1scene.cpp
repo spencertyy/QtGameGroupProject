@@ -180,7 +180,8 @@ void game1scene::updateLabels()
 // ... inside your game logic ...
 
 void game1scene::onGameEnded(bool won) {
-    GameOverDialog *dialog = new GameOverDialog(won, this);
+    QWidget* parentWidget = this->views().isEmpty() ? nullptr : this->views().first();
+    GameOverDialog *dialog = new GameOverDialog(won,  parentWidget);
     connect(dialog, &GameOverDialog::restartGame, this, &game1scene::restartGame);
     connect(dialog, &GameOverDialog::returnToProfile, this, &game1scene::returnToProfile);
     connect(dialog, &GameOverDialog::viewHistory, this, &game1scene::viewHistory);
@@ -193,6 +194,7 @@ void game1scene::restartGame() {
     // If using scenes, clear the current scene and set up a new one.
     // If you have timers, reset them.
     // Basically, reinitialize everything needed to start the game from scratch.
+
 }
 
 void game1scene::returnToProfile() {
