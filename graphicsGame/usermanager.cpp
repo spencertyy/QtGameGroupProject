@@ -1,7 +1,5 @@
 #include "usermanager.h"
 
-
-
 UserManager::UserManager(QObject *parent) : QObject(parent) {
      qDebug() << "UserManager object created";
 }
@@ -24,4 +22,9 @@ void UserManager::authenticateUser(QString userName, QString password) {
         qDebug() << "usermanager: Login failed. Invalid credentials.";
         emit userAuthenticationFailed();
     }
+}
+
+
+void UserManager::signUpUser(UserRequest* userRequest) {
+    qDebug() << "UserManager: signal recieved! User wants to sign up ";
 }

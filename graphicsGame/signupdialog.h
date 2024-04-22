@@ -19,12 +19,19 @@
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include <QMessageBox>
-#include "profile.h"
-
-
+//#include "profile.h"
+#include <qdebug.h>
+#include <usermanager.h>
 class signupdialog : public QDialog {
+    Q_OBJECT
+    //Q_DIALOG
 public:
-    signupdialog(QWidget *parent = nullptr);
+
+    signupdialog(UserManager* userManager, QWidget *parent = nullptr);
+
+    //to package user data
+    UserRequest* userRequest;
+    UserManager* userManager;
 
     QLineEdit *firstNameLineEdit;
     QLineEdit *lastNameLineEdit;
@@ -44,13 +51,14 @@ public:
 
     void setupUI();
     void connectSignals();
-    void setupDatabase();
     void onUploadButtonClicked();
     void checkPasswordValidity();
     void checkBirthday();
     void onSubmitButtonClicked();
     void showProfilePage();
 
+signals:
+    void signUp(UserRequest* userRequest);
 
 };
 

@@ -62,8 +62,8 @@ int  main(int argc, char **argv)
     });
 
     QObject::connect(signupButton, &QPushButton::clicked, [&](){
-        signupdialog* signUpDialog = new signupdialog();
-        signUpDialog->setupDatabase(); // Assuming setupDatabase is safe to call multiple times
+        signupdialog* signUpDialog = new signupdialog(userManager);
+        //KT: Don't think we need this line anymore? signUpDialog->setupDatabase(); // Assuming setupDatabase is safe to call multiple times
         signUpDialog->exec(); // Show the sign-up dialog modally
         //view_obj->show();
     });

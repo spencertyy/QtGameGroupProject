@@ -2,14 +2,13 @@
 
 
 
-signupdialog::signupdialog(QWidget *parent) : QDialog(parent) {
+signupdialog::signupdialog(UserManager* userManager, QWidget *parent) : QDialog(parent) {
+    this->userManager = userManager;
     setupUI();
     connectSignals();
-    setupDatabase();
 }
 
 void signupdialog::setupUI() {
-
 
     firstNameLineEdit = new QLineEdit(this);
     lastNameLineEdit = new QLineEdit(this);
@@ -73,10 +72,32 @@ void signupdialog::connectSignals() {
     connect(cancelButton, &QPushButton::clicked, this, &signupdialog::reject);
     connect(uploadButton, &QPushButton::clicked, this, &signupdialog::onUploadButtonClicked);
    // connect(submitButton, &QLineEdit::textChanged, this, &SignUpDialog::checkPasswordValidity);
+    //sender, signal, reciever, action
+    connect(this, &signupdialog::signUp, userManager, &UserManager::signUpUser);
 }
 void signupdialog::onSubmitButtonClicked() {
+
+    //pipes in username field from form
+    QString userName = usernameLineEdit->text();
+    QString password = passwordLineEdit->text();
+
+
+    //packages the data, build out user request
+    UserRequest* userRequest = new UserRequest();
+    userRequest->userName = userName;
+    userRequest->password = password;
+
+    qDebug() << "SignUpDialogue: user requesting to be signed up";
+    qDebug() << "username: " << userName;
+    qDebug() << "password:" << password;
+
+    //signal recieved by user manager where it can be fulfilled or denied
+    emit signUp(userRequest);
+
     checkPasswordValidity();
     checkBirthday();
+    //send signal to user manager, user wants to sign up! Is this an okay user name & password?
+
 }
 void signupdialog::onUploadButtonClicked() {
     QString fileName = QFileDialog::getOpenFileName(this, "Open Image", "", "Image Files (*.png *.jpg *.bmp)");
@@ -85,38 +106,29 @@ void signupdialog::onUploadButtonClicked() {
         profilePictureLabel->setPixmap(pixmap.scaled(profilePictureLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
     }
 }
-void signupdialog::setupDatabase() {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("application.db");
-    if (!db.open()) {
-        qDebug() << "Error: unable to open database";
-        return;
-    }
 
-    QSqlQuery query;
-    query.exec("CREATE TABLE IF NOT EXISTS users ("
-               "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-               "username TEXT UNIQUE, "
-               "password TEXT, "
-               "firstName TEXT, "
-               "lastName TEXT, "
-               "dateOfBirth DATE, "
-               "gender TEXT)");
-}
+
 // And implement the slot to check validity
 void signupdialog::checkPasswordValidity() {
+    // //pipes in data from form
+    // QString password = passwordLineEdit->text();
 
-    QString password = passwordLineEdit->text();
-    int pos = 0;
-    if(passwordValidator->validate(password, pos) != QValidator::Acceptable) {
+    // //packages the data
+    // userRequest.password = password;
+    // qDebug() << "SignUpDialogue: user password" << password;
 
-        QMessageBox::warning(this, "Invalid Password", "Password must contain at least one number, one uppercase letter, one lowercase letter, and be at least 8 characters long, and no punctuation");
-        passwordLineEdit->setStyleSheet("QLineEdit { border: 1px solid red; }");
 
-    } else {
-        showProfilePage();
-    }
-     //delete passwordValidator;
+    //KT TODO: uncomment when done testing. Maybe move logic to UserHandler?
+    // int pos = 0;
+    // if(passwordValidator->validate(password, pos) != QValidator::Acceptable) {
+
+    //     QMessageBox::warning(this, "Invalid Password", "Password must contain at least one number, one uppercase letter, one lowercase letter, and be at least 8 characters long, and no punctuation");
+    //     passwordLineEdit->setStyleSheet("QLineEdit { border: 1px solid red; }");
+
+    // } else {
+    //     showProfilePage();
+    // }
+    //  //delete passwordValidator;
 }
 
 void signupdialog::checkBirthday() {

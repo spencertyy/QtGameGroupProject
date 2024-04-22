@@ -13,6 +13,7 @@ profile::profile(UserInfo* userInfo, QWidget *parent)
     //setting profile feilds with user info
     ui->firstNameEdit->setText(userInfo->firstName);
     ui->lastNameEdit->setText(userInfo->lastName);
+
 }
 
 profile::~profile()

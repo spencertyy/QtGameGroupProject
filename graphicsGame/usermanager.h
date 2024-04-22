@@ -4,10 +4,31 @@
 #include <QObject>
 #include <QWidget>
 #include <QDebug>
+#include <QDate>
+#include <QComboBox>
+
+struct UserRequest {
+    QString userName;
+    QString password;
+
+    // QString firstName;
+    // QString lastName;
+    // QDate dob;
+    // QComboBox *gender;
+    // QPixmap pic;
+
+};
+
+
 
 struct UserInfo {
     QString firstName;
     QString lastName;
+    //TODO: add the rest of the userInfo feilds
+    // QDate dateOfBirth;
+    // QPixmap profilePicture;
+    // QString username;
+    //TODO: add game history records
 };
 
 class UserManager : public QObject {
@@ -24,6 +45,7 @@ signals:
 public slots:
     //responds to login page signal, verifies user
     void authenticateUser(QString userName, QString password);
+    void signUpUser(UserRequest* userRequest);
 };
 
 #endif // USERMANAGER_H
