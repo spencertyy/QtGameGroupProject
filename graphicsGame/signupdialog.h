@@ -24,7 +24,7 @@
 #include <usermanager.h>
 class signupdialog : public QDialog {
     Q_OBJECT
-    //Q_DIALOG
+
 public:
 
     signupdialog(UserManager* userManager, QWidget *parent = nullptr);
@@ -45,7 +45,6 @@ public:
     QPushButton* uploadButton;
     //QValidator *passwordValidator;
     QRegularExpressionValidator *passwordValidator;
-    QLabel *birthdayImageLabel;
     //profile* profilePage;
 
 
@@ -53,13 +52,15 @@ public:
     void connectSignals();
     void onUploadButtonClicked();
     void checkPasswordValidity();
-    void checkBirthday();
     void onSubmitButtonClicked();
-    void showProfilePage();
+
 
 signals:
     void signUp(UserRequest* userRequest);
 
+private slots:
+    void displayUserNameTakenWarning();
+    void showProfilePage(UserInfo* userInfo);
 };
 
 

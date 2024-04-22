@@ -157,7 +157,7 @@
     <string>date of birth:</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="dob">
+  <widget class="QLineEdit" name="dobLineEdit">
    <property name="geometry">
     <rect>
      <x>110</x>

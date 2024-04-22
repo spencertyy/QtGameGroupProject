@@ -1,4 +1,5 @@
 #include "signupdialog.h"
+#include "profile.h"
 
 
 
@@ -73,7 +74,15 @@ void signupdialog::connectSignals() {
     connect(uploadButton, &QPushButton::clicked, this, &signupdialog::onUploadButtonClicked);
    // connect(submitButton, &QLineEdit::textChanged, this, &SignUpDialog::checkPasswordValidity);
     //sender, signal, reciever, action
+
+    //handles user request for signup
     connect(this, &signupdialog::signUp, userManager, &UserManager::signUpUser);
+
+    //handles when username is already taken, displays warning
+    connect(userManager,&UserManager::userNameTaken, this, &signupdialog::displayUserNameTakenWarning);
+
+    //render user profile for new user
+    connect(userManager, &UserManager::userSignedUp, this, &signupdialog::showProfilePage);
 }
 void signupdialog::onSubmitButtonClicked() {
 
@@ -95,7 +104,6 @@ void signupdialog::onSubmitButtonClicked() {
     emit signUp(userRequest);
 
     checkPasswordValidity();
-    checkBirthday();
     //send signal to user manager, user wants to sign up! Is this an okay user name & password?
 
 }
@@ -131,35 +139,20 @@ void signupdialog::checkPasswordValidity() {
     //  //delete passwordValidator;
 }
 
-void signupdialog::checkBirthday() {
-    if (dobDateEdit->date().day() == QDate::currentDate().day() &&
-        dobDateEdit->date().month() == QDate::currentDate().month()) {
-        QDialog *birthdayDialog = new QDialog(this);
-        birthdayDialog->setWindowTitle("🎉Happy Birthday🎁");
 
-        QLabel *imageLabel = new QLabel(birthdayDialog);
-        QPixmap birthdayPic(":/new/prefix1/images/birthdayy.png");  // Ensure the path is correct
-        imageLabel->setPixmap(birthdayPic.scaled(400, 400, Qt::KeepAspectRatio));
 
-        QVBoxLayout *layout = new QVBoxLayout(birthdayDialog);
-        layout->addWidget(imageLabel);
-        birthdayDialog->setLayout(layout);
-        birthdayDialog->resize(400, 400);
-        birthdayDialog->setAttribute(Qt::WA_DeleteOnClose); // Ensure dialog is deleted on close
-
-        // Connect the dialog's close action to show profile page
-        connect(birthdayDialog, &QDialog::finished, this, &signupdialog::showProfilePage);
-        birthdayDialog->exec();
-    }
-}
 
 //TODO: KT make send signal to user manager of new user, render their profile page
-void signupdialog::showProfilePage() {
-    // profile* profilePage = new profile();
+void signupdialog::showProfilePage(UserInfo* userInfo) {
+    qDebug() <<"show profile page.";
+    profile* profilePage = new profile(userInfo);
+    profilePage->show();
+    this->close();  // 隐藏当前对话框，而不是关闭它
+}
 
-    // if (!profilePage) {
-    //     profilePage = new profile(this);
-    // }
-    // profilePage->show();
-    // this->close();  // 隐藏当前对话框，而不是关闭它
+void signupdialog::displayUserNameTakenWarning(){
+    qDebug() << "SignupDialogue: display user name taken warning!";
+
+    //create warking display
+    QMessageBox::warning(this, "Warning", "username taken");
 }

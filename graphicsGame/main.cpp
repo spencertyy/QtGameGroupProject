@@ -58,7 +58,7 @@ int  main(int argc, char **argv)
         loginPage* myLoginPage = new loginPage(userManager);
         myLoginPage->show();
         loginWindow->close();
-        // view_obj->show();
+        //view_obj->show();
     });
 
     QObject::connect(signupButton, &QPushButton::clicked, [&](){
