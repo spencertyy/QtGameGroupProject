@@ -8,10 +8,14 @@ UserManager::UserManager(QObject *parent) : QObject(parent) {
     usernamesNpasswords.insert("Bob", "abc");
     usernamesNpasswords.insert("Charlie", "efg");
 
+    QPixmap profilePic("/Users/k80l80d/qtGameGroupProject/graphicsGame/myfile.png");
+
+
     // Add sample user information data for each user
-    UserInfo* adminInfo = new UserInfo("admin", "Admin", "Adminson", QDate(1990, 4, 22), {90, 85, 95});
-    UserInfo* bobInfo = new UserInfo("Bob", "Bob", "Smith", QDate(1985, 5, 15), {70, 75, 80});
-    UserInfo* charlieInfo = new UserInfo("Charlie", "Charlie", "Brown", QDate(1978, 9, 30), {80, 85, 90});
+
+    UserInfo* adminInfo = new UserInfo("admin", "Admin", "Adminson", QDate(1990, 1, 1), {90, 85, 95},profilePic);
+    UserInfo* bobInfo = new UserInfo("Bob", "Bob", "Smith", QDate(1985, 5, 15), {70, 75, 80}, profilePic);
+    UserInfo* charlieInfo = new UserInfo("Charlie", "Charlie", "Brown", QDate(1978, 9, 30), {80, 85, 90},profilePic);
 
     usernameNuserInfo.insert("admin", adminInfo);
     usernameNuserInfo.insert("Bob", bobInfo);
