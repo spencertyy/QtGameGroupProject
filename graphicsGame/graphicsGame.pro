@@ -2,6 +2,7 @@ SOURCES += \
     bucket.cpp \
     droplet.cpp \
     game1scene.cpp \
+    gameoverdialog.cpp \
     loginpage.cpp \
     main.cpp \
     profile.cpp \
@@ -18,6 +19,7 @@ HEADERS += \
     cloud.h \
     droplet.h \
     game1scene.h \
+    gameoverdialog.h \
     loginpage.h \
     profile.h \
     signupdialog.h \
