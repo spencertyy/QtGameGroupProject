@@ -30,11 +30,10 @@ signals:
 
 private:
     Ui::loginPage *ui;
-    //KT: added user handler asociated with login page
-
-    // QLineEdit* usernameLineEdit;
-    // QLineEdit* passwordLineEdit;
-    //QPushButton* loginButton;
+    //adding a textbox to display if login fails
+private slots:
+    void displayUserProfile(UserInfo* userInfo);
+    void loginFailed();
 };
 
 #endif // LOGINPAGE_H

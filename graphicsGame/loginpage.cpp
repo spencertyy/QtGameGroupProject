@@ -7,10 +7,16 @@ loginPage::loginPage(UserManager *userManager, QWidget *parent)
     , ui(new Ui::loginPage)
 {
     ui->setupUi(this);
+
+    //requesta to authenticate username and password, upon button press
     connect(ui->pushButton,&QPushButton::clicked, this, &loginPage::onLoginButtonClicked);
     connect(this, &loginPage::loginAttempt, userManager, &UserManager::authenticateUser);
-    //KT: when login wiget it created, associate it with the usermanager process the data
 
+    //handles sucesfull authntication, displays user profile
+    connect(userManager, &UserManager::userAuthenticated, this, &loginPage::displayUserProfile);
+
+    //handles authentication failures, displays failure message
+    connect(userManager, &UserManager::userAuthenticationFailed, this, &loginPage::loginFailed);
 }
 
 loginPage::~loginPage()
@@ -18,7 +24,7 @@ loginPage::~loginPage()
     delete ui;
 }
 void loginPage::onLoginButtonClicked(){
-    qDebug() << "user clicked loginButon";
+    qDebug() << "loginPage: user clicked loginButon";
 
 
     //KT: pull data out of form
@@ -27,8 +33,6 @@ void loginPage::onLoginButtonClicked(){
 
     //KT: emit signal for userHandler to hear
     emit loginAttempt(userName, password);
-
-    qDebug() << "Signal was emitted";
 
 
     // profile* profilePage = new profile();
@@ -44,6 +48,15 @@ void loginPage::onLoginButtonClicked(){
     // } else {
     //     QMessageBox::warning(profilePage, "Login Failed", "The username or password is incorrect.");
     // }
+}
+void loginPage::displayUserProfile(UserInfo* userInfo){
+    qDebug() << "loginPage: User profile displayed";
+    qDebug() << "first: " << userInfo->firstName;
+    qDebug() << "last: " << userInfo->lastName;
+}
+
+void loginPage::loginFailed(){
+      qDebug() << "loginPage: user login Failed!!";
 }
 
 

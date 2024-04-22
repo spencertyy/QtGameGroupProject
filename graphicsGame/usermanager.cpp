@@ -1,5 +1,7 @@
 #include "usermanager.h"
 
+
+
 UserManager::UserManager(QObject *parent) : QObject(parent) {
      qDebug() << "UserManager object created";
 }
@@ -8,11 +10,18 @@ UserManager::~UserManager() {
 }
 void UserManager::authenticateUser(QString userName, QString password) {
     // Perform login logic here
-    qDebug() << "Attempting to log in with username:" << userName << "and password:" << password;
+    qDebug() << "user manager: Attempting to log in with username:" << userName << "and password:" << password;
     // Dummy logic for demonstration
     if (userName == "admin" && password == "password") {
-        qDebug() << "Login successful!";
+        qDebug() << "usermanager: Login successful!";
+
+        UserInfo* user = new UserInfo();
+        user->firstName = "John";
+        user->lastName = "Doe";
+        emit userAuthenticated(user);
+
     } else {
-        qDebug() << "Login failed. Invalid credentials.";
+        qDebug() << "usermanager: Login failed. Invalid credentials.";
+        emit userAuthenticationFailed();
     }
 }

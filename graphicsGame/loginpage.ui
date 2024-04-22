@@ -91,6 +91,19 @@
     <string>Password:</string>
    </property>
   </widget>
+  <widget class="QLabel" name="loginSatus">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>250</y>
+     <width>58</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>status</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
