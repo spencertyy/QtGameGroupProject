@@ -6,10 +6,12 @@ SOURCES += \
     main.cpp \
     profile.cpp \
     signupdialog.cpp \
-    usermanager.cpp \
+    usermanager.cpp
 
 RESOURCES += \
+    background.qrc \
     projectRes.qrc \
+    rainingMen.qrc
 
 HEADERS += \
     bucket.h \
@@ -19,10 +21,11 @@ HEADERS += \
     loginpage.h \
     profile.h \
     signupdialog.h \
-    usermanager.h \
+    usermanager.h
 
 QT += core gui widgets
 QT += sql
+QT += multimedia
 
 QMAKE_LFLAGS += -v
 
