@@ -11,15 +11,19 @@ profile::profile(UserInfo* userInfo, QWidget *parent)
     ui->dateTimeEdit->setDateTime(QDateTime::currentDateTime());
     connect(ui->gameStartBtn, &QPushButton::clicked, this, &profile::onGameStartBtnClicked);
 
-    //setting profile feilds with user info (username, firstname, lastname
+    //setting profile with username, firstname, lastname
     ui->userNameEdit->setText(userInfo->username);
     ui->firstNameEdit->setText(userInfo->firstName);
     ui->lastNameEdit->setText(userInfo->lastName);
 
-    //setting profile with users date of birth
+    //setting profile data (date of birth)
     QDate userDOB = userInfo->dateOfBirth;
     QString dateString = userDOB.toString("yyyy-MM-dd");  // Convert the QDate to a string in a specific format (e.g., "yyyy-MM-dd");
     ui->dobLineEdit->setText(dateString);
+
+    //settting the profile picture
+    QPixmap userPic = userInfo->profilePicture; // Get UserInfo object
+    displayProfilePicture(userPic);
 
     //is users birthday today? Then display birthday pop window!
     if(userDOB.day() == QDate::currentDate().day() && userDOB.month() == QDate::currentDate().month()){
@@ -52,6 +56,26 @@ void profile::onGameStartBtnClicked(){
     //this->hide();
 }
 
+void profile::displayProfilePicture(const QPixmap& profilePic) {
+    // Create a instance of the item
+    QGraphicsPixmapItem* pixmapItem = new QGraphicsPixmapItem(profilePic);
+
+    //Obtain scene associated with the view
+    QGraphicsScene* scene = ui->picView->scene();
+    if (!scene) {
+        //if no sccene aosicated, create a new one and set it
+        scene = new QGraphicsScene(this);
+        ui->picView->setScene(scene);
+    }
+    scene->clear();
+
+    //add the item to the scene
+    scene->addItem(pixmapItem);
+
+
+    // Optionally, adjust the view to fit the pixmap item
+    ui->picView->fitInView(pixmapItem, Qt::KeepAspectRatio);
+}
 
 //KT: to do move this logic to the profile class?
 void profile::displayBirthdayMessage() {

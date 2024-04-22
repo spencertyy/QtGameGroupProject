@@ -39,8 +39,6 @@ int  main(int argc, char **argv)
     loginWindow->resize(300, 300);
     loginWindow->show();
 
-
-
     game1scene *scene = new game1scene();
     QGraphicsView* view_obj = new QGraphicsView(scene);
 

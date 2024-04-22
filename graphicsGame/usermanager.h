@@ -20,18 +20,17 @@ struct UserRequest {
     // QPixmap pic;
 };
 
-// QPixmap profilePicture;
 struct UserInfo {
     QString username;
     QString firstName;
     QString lastName;
     QDate dateOfBirth;
-    QVector<int> scoreHistory;
-    //TODO: need member to track game history of player
+    QVector<int> scoreHistory;//track game history of player
+    QPixmap profilePicture;
 
     // Constructor
-    UserInfo(const QString& uname = "", const QString& fname = "", const QString& lname = "", const QDate& dob = QDate(), const QVector<int>& scores = QVector<int>())
-        : username(uname), firstName(fname), lastName(lname), dateOfBirth(dob), scoreHistory(scores) {}
+    UserInfo(const QString& uname = "", const QString& fname = "", const QString& lname = "", const QDate& dob = QDate(), const QVector<int>& scores = QVector<int>(), const QPixmap& picture = QPixmap())
+        : username(uname), firstName(fname), lastName(lname), dateOfBirth(dob), scoreHistory(scores), profilePicture(picture) {}
 };
 
 class UserManager : public QObject {

@@ -29,6 +29,8 @@ public:
     Ui::profile *ui;
     QPushButton *gameStartBtn; // Ensure this is properly connected to the UI
     void displayBirthdayMessage();
+private:
+    void displayProfilePicture(const QPixmap& profilePic);
 
 signals:
     //signal emited if its the users birthday today
