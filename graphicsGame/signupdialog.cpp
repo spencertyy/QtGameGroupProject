@@ -142,7 +142,7 @@ void signupdialog::checkPasswordValidity() {
 
 
 
-//TODO: KT make send signal to user manager of new user, render their profile page
+//recieves signal from user manager of new user, render their profile page
 void signupdialog::showProfilePage(UserInfo* userInfo) {
     qDebug() <<"show profile page.";
     profile* profilePage = new profile(userInfo);
@@ -150,6 +150,7 @@ void signupdialog::showProfilePage(UserInfo* userInfo) {
     this->close();  // 隐藏当前对话框，而不是关闭它
 }
 
+//recieves singal from userManage that username is already taken,displays warning on login page
 void signupdialog::displayUserNameTakenWarning(){
     qDebug() << "SignupDialogue: display user name taken warning!";
 

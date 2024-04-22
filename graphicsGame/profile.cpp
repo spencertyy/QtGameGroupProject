@@ -1,7 +1,7 @@
 #include "profile.h"
 #include "ui_profile.h"
 
-
+//profile shows up upon successful login or sucessful signup,(user info supplied by user manager after verifying credentials)
 profile::profile(UserInfo* userInfo, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::profile)
@@ -11,20 +11,21 @@ profile::profile(UserInfo* userInfo, QWidget *parent)
     ui->dateTimeEdit->setDateTime(QDateTime::currentDateTime());
     connect(ui->gameStartBtn, &QPushButton::clicked, this, &profile::onGameStartBtnClicked);
 
-    //setting profile feilds with user info
+    //setting profile feilds with user info (username, firstname, lastname
+    ui->userNameEdit->setText(userInfo->username);
     ui->firstNameEdit->setText(userInfo->firstName);
     ui->lastNameEdit->setText(userInfo->lastName);
 
+    //setting profile with users date of birth
     QDate userDOB = userInfo->dateOfBirth;
-    //is it the users birthday today?
+    QString dateString = userDOB.toString("yyyy-MM-dd");  // Convert the QDate to a string in a specific format (e.g., "yyyy-MM-dd");
+    ui->dobLineEdit->setText(dateString);
+
+    //is users birthday today? Then display birthday pop window!
     if(userDOB.day() == QDate::currentDate().day() && userDOB.month() == QDate::currentDate().month()){
         qDebug() << "it's the users birthday today!";
         displayBirthdayMessage();
     }
-
-    // Convert the QDate to a string in a specific format (e.g., "yyyy-MM-dd")
-    QString dateString = userDOB.toString("yyyy-MM-dd");
-    ui->dobLineEdit->setText(dateString);
 }
 
 profile::~profile()
@@ -60,6 +61,9 @@ void profile::displayBirthdayMessage() {
     QLabel *imageLabel = new QLabel(birthdayDialog);
     QPixmap birthdayPic(":/new/prefix1/images/birthdayy.png");  // Ensure the path is correct
     imageLabel->setPixmap(birthdayPic.scaled(400, 400, Qt::KeepAspectRatio));
+
+    QLabel *textLabel = new QLabel("Happy Birthday!", birthdayDialog);
+    textLabel->setAlignment(Qt::AlignCenter);
 
     QVBoxLayout *layout = new QVBoxLayout(birthdayDialog);
     layout->addWidget(imageLabel);

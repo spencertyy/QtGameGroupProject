@@ -8,7 +8,7 @@
 #include <QComboBox>
 #include <QMap>
 #include <QString>
-
+#include <QVector>
 struct UserRequest {
     QString userName;
     QString password;
@@ -18,19 +18,20 @@ struct UserRequest {
     QDate dob;
     // QComboBox *gender;
     // QPixmap pic;
-
 };
 
-
-
+// QPixmap profilePicture;
 struct UserInfo {
+    QString username;
     QString firstName;
     QString lastName;
-    //TODO: add the rest of the userInfo feilds
     QDate dateOfBirth;
-    // QPixmap profilePicture;
-    // QString username;
-    //TODO: add game history records
+    QVector<int> scoreHistory;
+    //TODO: need member to track game history of player
+
+    // Constructor
+    UserInfo(const QString& uname = "", const QString& fname = "", const QString& lname = "", const QDate& dob = QDate(), const QVector<int>& scores = QVector<int>())
+        : username(uname), firstName(fname), lastName(lname), dateOfBirth(dob), scoreHistory(scores) {}
 };
 
 class UserManager : public QObject {
@@ -38,8 +39,13 @@ class UserManager : public QObject {
 public:
     explicit UserManager(QObject *parent = nullptr);
     ~UserManager();
-    QMap<QString, QString> users;
 
+    //KT TODO: add users and password to this list  during sign up process
+    QMap<QString, QString> usernamesNpasswords;
+    QMap<QString, UserInfo*> usernameNuserInfo;
+
+    //KT: TODO: make private later
+    static void printMap(QMap <QString, QString> usernameNpasswords);
 
 //KT: added slot; authenticate user to be called by loginpage wiget upon sign-in button click
 signals:
@@ -53,6 +59,7 @@ public slots:
     //responds to login page signal, verifies user
     void authenticateUser(QString userName, QString password);
     void signUpUser(UserRequest* userRequest);
+
 
 };
 
