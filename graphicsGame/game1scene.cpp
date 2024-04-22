@@ -29,6 +29,9 @@ game1scene::game1scene(QObject *parent):QGraphicsScene(parent) {
     pointsLabel->setFont(QFont("Arial", 16));
     missedLabel->setFont(QFont("Arial", 16));
 
+    pointsLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    missedLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+
     // Set initial text for the labels
     updateLabels();
 
@@ -38,6 +41,8 @@ game1scene::game1scene(QObject *parent):QGraphicsScene(parent) {
 
     QGraphicsProxyWidget *missedDropletsProxy = addWidget(missedLabel);
     missedDropletsProxy->setPos(70, 100);
+
+
 
     scoreUpdateTimer->start(100);
 
