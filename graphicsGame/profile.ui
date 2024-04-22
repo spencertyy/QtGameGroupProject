@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QGraphicsView" name="graphicsView">
+  <widget class="QGraphicsView" name="picView">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -23,7 +23,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="scoreHistory">
+  <widget class="QPushButton" name="scoreHistoryBtn">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -49,7 +49,7 @@
     <string>Start Game</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="welcomeLabel">
    <property name="geometry">
     <rect>
      <x>100</x>
@@ -75,7 +75,7 @@
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QLabel" name="label_2">
+  <widget class="QLabel" name="userNameLabel">
    <property name="geometry">
     <rect>
      <x>150</x>
@@ -88,7 +88,7 @@
     <string>UserName:</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_3">
+  <widget class="QLabel" name="firstNameLabel">
    <property name="geometry">
     <rect>
      <x>150</x>
@@ -101,7 +101,7 @@
     <string>FristName:</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_4">
+  <widget class="QLabel" name="lastNameLabel">
    <property name="geometry">
     <rect>
      <x>150</x>
@@ -114,7 +114,7 @@
     <string>LastName:</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit">
+  <widget class="QLineEdit" name="userNameEdit">
    <property name="geometry">
     <rect>
      <x>230</x>
@@ -124,7 +124,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_2">
+  <widget class="QLineEdit" name="firstNameEdit">
    <property name="geometry">
     <rect>
      <x>230</x>
@@ -134,7 +134,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_3">
+  <widget class="QLineEdit" name="lastNameEdit">
    <property name="geometry">
     <rect>
      <x>230</x>
@@ -144,7 +144,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QLabel" name="label_5">
+  <widget class="QLabel" name="currentDate">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -157,7 +157,7 @@
     <string>date of birth:</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_4">
+  <widget class="QLineEdit" name="dob">
    <property name="geometry">
     <rect>
      <x>110</x>
@@ -177,7 +177,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QLabel" name="label_6">
+  <widget class="QLabel" name="TodayLabel">
    <property name="geometry">
     <rect>
      <x>30</x>

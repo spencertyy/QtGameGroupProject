@@ -26,7 +26,7 @@
     <string>Login</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit">
+  <widget class="QLineEdit" name="userNameEdit">
    <property name="geometry">
     <rect>
      <x>140</x>
@@ -39,7 +39,7 @@
     <string/>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_2">
+  <widget class="QLineEdit" name="passwordEdit">
    <property name="geometry">
     <rect>
      <x>140</x>
@@ -94,14 +94,14 @@
   <widget class="QLabel" name="loginSatus">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>60</x>
      <y>250</y>
-     <width>58</width>
+     <width>261</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>status</string>
+    <string/>
    </property>
   </widget>
  </widget>

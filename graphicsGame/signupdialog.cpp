@@ -141,12 +141,13 @@ void signupdialog::checkBirthday() {
     }
 }
 
+//TODO: KT make send signal to user manager of new user, render their profile page
 void signupdialog::showProfilePage() {
-    profile* profilePage = new profile();
+    // profile* profilePage = new profile();
 
-    if (!profilePage) {
-        profilePage = new profile(this);
-    }
-    profilePage->show();
-    this->close();  // 隐藏当前对话框，而不是关闭它
+    // if (!profilePage) {
+    //     profilePage = new profile(this);
+    // }
+    // profilePage->show();
+    // this->close();  // 隐藏当前对话框，而不是关闭它
 }

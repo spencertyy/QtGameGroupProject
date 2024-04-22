@@ -2,13 +2,17 @@
 #include "ui_profile.h"
 
 
-profile::profile(QWidget *parent)
+profile::profile(UserInfo* userInfo, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::profile)
 {
     ui->setupUi(this);
     ui->dateTimeEdit->setDateTime(QDateTime::currentDateTime());
     connect(ui->gameStartBtn, &QPushButton::clicked, this, &profile::onGameStartBtnClicked);
+
+    //setting profile feilds with user info
+    ui->firstNameEdit->setText(userInfo->firstName);
+    ui->lastNameEdit->setText(userInfo->lastName);
 }
 
 profile::~profile()

@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QPushButton>
 #include "game1scene.h"
-
+#include "usermanager.h"
 namespace Ui {
 class profile;
 }
@@ -14,7 +14,7 @@ class profile : public QWidget
     Q_OBJECT
 
 public:
-    explicit profile(QWidget *parent = nullptr);
+    explicit profile(UserInfo* user,QWidget *parent = nullptr);
     ~profile();
 
     Ui::profile *ui;
