@@ -227,7 +227,7 @@ void game1scene::onGameEnded(bool won) {
     bool isGuest = (userinfo == nullptr);
     GameOverDialog *dialog = new GameOverDialog(won, isGuest, parentWidget);
     if (!isGuest) {
-        userinfo->scoreHistory.append(game_score);
+        userinfo->addScore(game_score);
     }
 
     this->view->close();

@@ -9,6 +9,15 @@
 #include <QMap>
 #include <QString>
 #include <QVector>
+
+#include "QtCore/qjsonarray.h"
+
+#include <QFile> //create file objects
+#include <QJsonObject> //creates Json Objects
+#include <qjsondocument>
+#include <QCoreApplication> //used to get relative path
+
+
 struct UserRequest {
     QString userName;
     QString password;
@@ -31,22 +40,28 @@ struct UserInfo {
     QString username;
     QString firstName;
     QString lastName;
+    QString password;
     QDate dateOfBirth;
     QVector<int> scoreHistory;//track game history of player
     QPixmap profilePicture;
+    void* manager;
 
     // Constructor
-    UserInfo(const QString& uname = "", const QString& fname = "", const QString& lname = "", const QDate& dob = QDate(), const QVector<int>& scores = QVector<int>(), const QPixmap& picture = QPixmap())
-        : username(uname), firstName(fname), lastName(lname), dateOfBirth(dob), scoreHistory(scores), profilePicture(picture) {}
+    UserInfo(void* manager, const QString& uname = "", const QString& fname = "", const QString& lname = "", const QString& pw = "", const QDate& dob = QDate(), const QVector<int>& scores = QVector<int>(), const QPixmap& picture = QPixmap())
+        : username(uname), firstName(fname), lastName(lname), password(pw), dateOfBirth(dob), scoreHistory(scores), profilePicture(picture), manager(manager) {}
 
     // Constructor from UserRequest pointer
-    UserInfo(const UserRequest* request)
+    UserInfo(void* manager, const UserRequest* request)
         : username(request->userName),
         firstName(request->firstName),
         lastName(request->lastName),
+        password(request->password),
         dateOfBirth(request->dob),
-        scoreHistory(QVector<int>()), // Initialize with empty score history
-        profilePicture(request->pic) {}
+        scoreHistory(QVector<int>()),
+        profilePicture(request->pic), // Initialize with empty score history
+        manager(manager) {}
+
+    void addScore(int score);
 
     //    // Static print method
     static void print(const UserInfo* userInfo);
@@ -59,11 +74,13 @@ public:
     ~UserManager();
 
     //KT TODO: add users and password to this list  during sign up process
-    QMap<QString, QString> usernamesNpasswords;
     QMap<QString, UserInfo*> usernameNuserInfo;
 
-    //KT: TODO: make private later
-    static void printMap(QMap <QString, QString> usernameNpasswords);
+    void print();
+
+    void serialize();
+
+    void deserialize();
 
 //KT: added slot; authenticate user to be called by loginpage wiget upon sign-in button click
 signals:
