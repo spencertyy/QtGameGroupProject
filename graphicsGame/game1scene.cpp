@@ -137,7 +137,7 @@ void game1scene::checkMissedDroplets(){
 
             // Check missing by reaching out of bound
             if (dropletItem->y() > windowHeight) {
-                //missingEffect->play();
+                missingEffect->play();
                 missed_droplets++;
                 removeItem(dropletItem);
                 //scene->removeItem(dropletItem);
