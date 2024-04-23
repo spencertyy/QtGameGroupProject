@@ -15,6 +15,7 @@ profile::profile(UserInfo* userInfo, QWidget *parent)
     ui->userNameEdit->setText(userInfo->username);
     ui->firstNameEdit->setText(userInfo->firstName);
     ui->lastNameEdit->setText(userInfo->lastName);
+    //ui->dobLineEdit->setText(userInfo->dateOfBirth);
 
     //setting profile data (date of birth)
     QDate userDOB = userInfo->dateOfBirth;
@@ -57,21 +58,28 @@ void profile::onGameStartBtnClicked(){
 }
 
 void profile::displayProfilePicture(const QPixmap& profilePic) {
+
     // Create a instance of the item
     QGraphicsPixmapItem* pixmapItem = new QGraphicsPixmapItem(profilePic);
 
+    //set position and scale of item
+    qreal scaleFactor = qMin(static_cast<qreal>(ui->picView->width()) / profilePic.width(), static_cast<qreal>(ui->picView->height()) / profilePic.height());
+    pixmapItem->setPos(0, 0);
+    pixmapItem->setScale(scaleFactor);
+
     //Obtain scene associated with the view
-    QGraphicsScene* scene = ui->picView->scene();
+    scene = ui->picView->scene();
     if (!scene) {
         //if no sccene aosicated, create a new one and set it
         scene = new QGraphicsScene(this);
         ui->picView->setScene(scene);
     }
-    scene->clear();
+    else{
+        scene->clear();
+    }
 
     //add the item to the scene
     scene->addItem(pixmapItem);
-
 
     // Optionally, adjust the view to fit the pixmap item
     ui->picView->fitInView(pixmapItem, Qt::KeepAspectRatio);

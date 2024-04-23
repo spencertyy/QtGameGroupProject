@@ -89,21 +89,26 @@ void signupdialog::onSubmitButtonClicked() {
     //pipes in username field from form
     QString userName = usernameLineEdit->text();
     QString password = passwordLineEdit->text();
-
+    QString firstName = firstNameLineEdit->text();
+    QString lastName = lastNameLineEdit->text();
+    QDate dob = dobDateEdit->date();
+    // QComboBox *gender = genderComboBox->
+    QPixmap profilePicUpload = profilePictureLabel->pixmap().copy();
+    QString gender = genderComboBox->currentText();
 
     //packages the data, build out user request
     UserRequest* userRequest = new UserRequest();
     userRequest->userName = userName;
+    userRequest->firstName = firstName;
+    userRequest->lastName = lastName;
     userRequest->password = password;
-
-    qDebug() << "SignUpDialogue: user requesting to be signed up";
-    qDebug() << "username: " << userName;
-    qDebug() << "password:" << password;
-
-    //signal recieved by user manager where it can be fulfilled or denied
-    emit signUp(userRequest);
+    userRequest->dob = dob;
+    userRequest->gender = gender;
+    userRequest->pic = profilePicUpload;
 
     checkPasswordValidity();
+    //signal recieved by user manager where it can be fulfilled or denied
+    emit signUp(userRequest);
     //send signal to user manager, user wants to sign up! Is this an okay user name & password?
 
 }
@@ -144,7 +149,7 @@ void signupdialog::checkPasswordValidity() {
 
 //recieves signal from user manager of new user, render their profile page
 void signupdialog::showProfilePage(UserInfo* userInfo) {
-    qDebug() <<"show profile page.";
+    qDebug() <<"Signup Dialolgue: show profile page.";
     profile* profilePage = new profile(userInfo);
     profilePage->show();
     this->close();  // 隐藏当前对话框，而不是关闭它

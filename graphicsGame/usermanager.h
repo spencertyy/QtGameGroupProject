@@ -12,12 +12,19 @@
 struct UserRequest {
     QString userName;
     QString password;
-
     QString firstName;
     QString lastName;
     QDate dob;
-    // QComboBox *gender;
-    // QPixmap pic;
+    QString gender;
+    QPixmap pic;
+
+    // Constructor with default parameter values
+    UserRequest(const QString& uname = "", const QString& pwd = "",
+                const QString& fname = "", const QString& lname = "",
+                const QDate& dob = QDate(), const QString& gender = "",
+                const QPixmap& pic = QPixmap())
+        : userName(uname), password(pwd), firstName(fname), lastName(lname),
+        dob(dob), gender(gender), pic(pic) {}
 };
 
 struct UserInfo {
@@ -31,6 +38,18 @@ struct UserInfo {
     // Constructor
     UserInfo(const QString& uname = "", const QString& fname = "", const QString& lname = "", const QDate& dob = QDate(), const QVector<int>& scores = QVector<int>(), const QPixmap& picture = QPixmap())
         : username(uname), firstName(fname), lastName(lname), dateOfBirth(dob), scoreHistory(scores), profilePicture(picture) {}
+
+    // Constructor from UserRequest pointer
+    UserInfo(const UserRequest* request)
+        : username(request->userName),
+        firstName(request->firstName),
+        lastName(request->lastName),
+        dateOfBirth(request->dob),
+        scoreHistory(QVector<int>()), // Initialize with empty score history
+        profilePicture(request->pic) {}
+
+    //    // Static print method
+    static void print(const UserInfo* userInfo);
 };
 
 class UserManager : public QObject {

@@ -22,6 +22,7 @@
 //#include "profile.h"
 #include <qdebug.h>
 #include <usermanager.h>
+#include <QPixmap>
 class signupdialog : public QDialog {
     Q_OBJECT
 

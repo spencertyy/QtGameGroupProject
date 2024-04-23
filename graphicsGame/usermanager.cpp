@@ -3,7 +3,7 @@
 UserManager::UserManager(QObject *parent) : QObject(parent) {
      qDebug() << "UserManager object created";
 
-     //add sample data for the sake of testing
+    //  //add sample data for the sake of testing
     usernamesNpasswords.insert("admin", "password");
     usernamesNpasswords.insert("Bob", "abc");
     usernamesNpasswords.insert("Charlie", "efg");
@@ -16,6 +16,7 @@ UserManager::UserManager(QObject *parent) : QObject(parent) {
     UserInfo* adminInfo = new UserInfo("admin", "Admin", "Adminson", QDate(1990, 1, 1), {90, 85, 95},profilePic);
     UserInfo* bobInfo = new UserInfo("Bob", "Bob", "Smith", QDate(1985, 5, 15), {70, 75, 80}, profilePic);
     UserInfo* charlieInfo = new UserInfo("Charlie", "Charlie", "Brown", QDate(1978, 9, 30), {80, 85, 90},profilePic);
+
 
     usernameNuserInfo.insert("admin", adminInfo);
     usernameNuserInfo.insert("Bob", bobInfo);
@@ -58,11 +59,12 @@ void UserManager::printMap(QMap <QString, QString> usernameNpasswords){
     }
 }
 
-//handles user sign up requests on signup form
+//handles user sign up requests, upon signal sent from signup form
 void UserManager::signUpUser(UserRequest* userRequest) {
     qDebug() << "UserManager: signal recieved! User wants to sign up ";
     qDebug() << "username: " << userRequest->userName;
     qDebug() << "password:" << userRequest->password;
+
 
     QString requestedUserName =  userRequest->userName;
 
@@ -80,20 +82,25 @@ void UserManager::signUpUser(UserRequest* userRequest) {
         //add new users to "database"
         usernamesNpasswords.insert(requestedUserName, userRequest->password);
         qDebug() << "UserManager: new user: " << requestedUserName;
-        qDebug() << "UserManager: full list of password and keys:";
-        //prints full user log
-        printMap(usernamesNpasswords);
 
-        //transfer only data needed to render profile;
-
-        UserInfo* userInfo = new UserInfo();
-        userInfo->username = userRequest->userName;
-        userInfo->firstName = userRequest->firstName;
-        userInfo->lastName = userRequest->lastName;
-        userInfo->dateOfBirth = userRequest->dob;
-
+        //transfer only data needed to render profile,
+        UserInfo* userInfo = new UserInfo(userRequest);
+        UserInfo::print(userInfo);
+        //signal sent to login page to render profile page
         emit userSignedUp(userInfo);
     }
+}
+ void UserInfo::print(const UserInfo* userInfo) {
+    qDebug() << "Username:" << userInfo->username;
+    qDebug() << "First Name:" << userInfo->firstName;
+    qDebug() << "Last Name:" << userInfo->lastName;
+    qDebug() << "Date of Birth:" << userInfo->dateOfBirth.toString("yyyy-MM-dd");
+    qDebug() << "Score History:";
+    for (int score : userInfo->scoreHistory) {
+        qDebug() << score;
+    }
+    // Additional information about profile picture if needed
+    //qDebug() << "Profile Picture:" << userInfo->profilePicture.isNull() ? "Not set" : "Set";
 }
 
 

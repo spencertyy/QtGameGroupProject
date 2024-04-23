@@ -23,13 +23,16 @@ public:
     QDialog *birthdayDialog;
     QLabel *birthdayImageLabel;
     QDateEdit *dobDateEdit;
+
+    //Scene for picture
+    QGraphicsScene* scene;
+
     explicit profile(UserInfo* user,QWidget *parent = nullptr);
     ~profile();
 
     Ui::profile *ui;
     QPushButton *gameStartBtn; // Ensure this is properly connected to the UI
     void displayBirthdayMessage();
-private:
     void displayProfilePicture(const QPixmap& profilePic);
 
 signals:
