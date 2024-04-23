@@ -10,7 +10,7 @@ class GameOverDialog : public QDialog {
     Q_OBJECT
 
 public:
-    explicit GameOverDialog(bool won, QWidget *parent = nullptr);
+    explicit GameOverDialog(bool won, bool isGuest, QWidget *parent = nullptr);
 
 signals:
     void restartGame();
@@ -24,7 +24,7 @@ private slots:
     void onCloseClicked();
 
 private:
-    void setupUi(bool won);
+    void setupUi(bool won, bool isGuest);
 };
 
 #endif // GAMEOVERDIALOG_H

@@ -11,8 +11,9 @@ class droplet:public QObject,public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:
-    droplet(QGraphicsItem *parent = nullptr);
+    droplet(bool* gameOver, QGraphicsItem *parent = nullptr);
     int drop_speed = 1;
+    bool* gameOver;
 public slots:
     void move();
 };

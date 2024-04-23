@@ -11,6 +11,7 @@
 #include <QDialog>
 #include <QLineEdit>
 #include <QBoxLayout>
+#include "usermanager.h"
 namespace Ui {
 class profile;
 }
@@ -23,6 +24,7 @@ public:
     QDialog *birthdayDialog;
     QLabel *birthdayImageLabel;
     QDateEdit *dobDateEdit;
+    UserInfo* userInfo;
 
     //Scene for picture
     QGraphicsScene* scene;
