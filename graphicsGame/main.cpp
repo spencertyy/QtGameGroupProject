@@ -39,6 +39,19 @@ int  main(int argc, char **argv)
     loginWindow->resize(300, 300);
     loginWindow->show();
 
+
+
+    // Get the current working directory
+    QString currentPath = QDir::currentPath();
+    qDebug() << "Current path:" << currentPath;
+
+    // Construct a relative path
+    QString relativePath = "subfolder/file.txt";
+
+    // Append the relative path to the current directory
+    QString absolutePath = QDir::cleanPath(currentPath + QDir::separator() + relativePath);
+    qDebug() << "Absolute path:" << absolutePath;
+
     UserManager* userManager = new UserManager();
 
     // Slots to handle button clicks should close login window and show game view

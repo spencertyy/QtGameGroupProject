@@ -9,9 +9,7 @@
 #include <QMap>
 #include <QString>
 #include <QVector>
-
 #include "QtCore/qjsonarray.h"
-
 #include <QFile> //create file objects
 #include <QJsonObject> //creates Json Objects
 #include <qjsondocument>

@@ -120,9 +120,11 @@ void UserInfo::addScore(int score) {
          UserInfo::print(user);
     }
  }
-
+//takes all users and seralizes them and puts them in a file on disk
 void UserManager::serialize() {
     QJsonObject userMap = QJsonObject();
+
+    //seralize each user in the master list of users
     for (UserInfo* user : usernameNuserInfo) {
         QJsonObject userInfoJson;
         userInfoJson["username"] = user->username;
@@ -130,6 +132,8 @@ void UserManager::serialize() {
         userInfoJson["lastname"] = user->lastName;
         userInfoJson["password"] = user->password;
         userInfoJson["dob"] = user->dateOfBirth.toString();
+
+        //save profile picture
         bool picExists = !user->profilePicture.isNull();
         userInfoJson["picture"] = picExists;
         if (picExists) {
@@ -143,21 +147,32 @@ void UserManager::serialize() {
             user->profilePicture.save(&picFile, "PNG");
             qDebug() << "wrote profile picture to file";
         }
+        //save scores history info
         QJsonArray scoresJson = QJsonArray();
         for (int score : user->scoreHistory) {
             scoresJson.append(score);
         }
         userInfoJson["scores"] = scoresJson;
-        userMap[user->username] = userInfoJson;
+        userMap[user->username] = userInfoJson; //<key = username> <value = userInfoJson>
     }
+
+    //convert that user mapping into a JSON document
     QJsonDocument jsonDoc = QJsonDocument(userMap);
+    //Open a file called userMapping.json
     QFile file(QString(PATH) + QString("/userMapping.json"));
-    if (!file.open(QFile::WriteOnly | QIODevice::Text)) {
-        if (!file.open(QFile::WriteOnly | QIODevice::Text | QIODevice::NewOnly)) {
-            qDebug() << "Failed to open or create file for writing.";
-        }
+
+    // if (!file.open(QFile::WriteOnly | QIODevice::Text)) {
+    //     if (!file.open(QFile::WriteOnly | QIODevice::Text | QIODevice::NewOnly)) {
+    //         qDebug() << "Failed to open or create file for writing.";
+    //     }
+    //     return;
+    // }
+
+    if (!file.open(QFile::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+        qDebug() << "Failed to open or create file for writing.";
         return;
     }
+
     file.write(jsonDoc.toJson());
     file.close();
     qDebug() << "User data written to file";
@@ -170,7 +185,7 @@ void UserManager::deserialize() {
         return;
     }
 
-    // Read the entire file content
+    // Read the entire file content, should contain all user data
     QByteArray fileData = file.readAll();
     file.close();
 
@@ -178,27 +193,31 @@ void UserManager::deserialize() {
     QJsonParseError parseError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(fileData, &parseError);
 
+    //error check
     if (parseError.error != QJsonParseError::NoError) {
         qDebug() << "Failed to parse JSON:" << parseError.errorString();
     }
 
-    // If the JSON document is an array, create a new one
+    // If the JSON document is not an object create a new one
     if (!jsonDoc.isObject()) {
         qDebug() << "JSON document is not an object.";
         jsonDoc = QJsonDocument(QJsonObject());
     }
 
-    // Get the JSON array
+    // Get that jsonDocument and turn it into a object
     QJsonObject jsonObj = jsonDoc.object();
 
+    //clear any previous data stored in the process list of users
     usernameNuserInfo.clear();
 
+    //the key should be the username and the value should be the user data
     for (QString key : jsonObj.keys()) {
         QJsonValue userJson = jsonObj.value(key);
         if (!userJson.isObject()) {
             qDebug() << "JSON document is improperly formmatted";
             continue;
         }
+        //check that the user data has all appropriate fields
         QJsonObject userJsonObj = userJson.toObject();
         if (!userJsonObj.keys().contains("username") ||
             !userJsonObj.keys().contains("firstname") ||
@@ -210,6 +229,7 @@ void UserManager::deserialize() {
             qDebug() << "JSON user info missing fields";
             continue;
         }
+        //check that those fields are the proper types
         QJsonValue usernameJson = userJsonObj.value("username");
         QJsonValue firstNameJson = userJsonObj.value("firstname");
         QJsonValue lastNameJson = userJsonObj.value("lastname");
@@ -227,6 +247,7 @@ void UserManager::deserialize() {
             qDebug() << "JSON user info fields invalid";
             continue;
         }
+        //after all checks, load user JSON objects into process repsentation of users
         QString username = usernameJson.toString();
         QString firstName = firstNameJson.toString();
         QString lastName = lastNameJson.toString();
@@ -234,11 +255,13 @@ void UserManager::deserialize() {
         QDate dob = QDate::fromString(dobJson.toString());
         bool picExists = pictureJson.toBool();
         QPixmap picture;
+        //load in picture
         if (picExists) {
             picture = QPixmap(QString(PATH) + QString("/") + username + QString(".png"));
         } else {
             picture = QPixmap();
         }
+        //load in score history
         QJsonArray scoresJsonArr = scoresJson.toArray();
         QVector<int> scores = QVector<int>();
         for (QJsonValue scoreJson : scoresJsonArr) {
@@ -249,6 +272,7 @@ void UserManager::deserialize() {
             int score = scoreJson.toInt();
             scores.append(score);
         }
+        //create a process reprsentation of the user and add them to the list of all users
         UserInfo* userInfo = new UserInfo(this, username, firstName, lastName, password, dob, scores, picture);
         usernameNuserInfo.insert(username, userInfo);
     }
