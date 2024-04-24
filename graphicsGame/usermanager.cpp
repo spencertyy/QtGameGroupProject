@@ -12,7 +12,7 @@ UserManager::~UserManager() {
     qDebug() << "UserManager object destroyed";
 }
 
-//handles user authentication on login page
+//handles user authentication on login page (slot connected to signal from login form)
 void UserManager::authenticateUser(QString userName, QString password) {
     // Perform login logic here
     qDebug() << "user manager: Attempting to log in with username:" << userName << "and password:" << password;
@@ -33,17 +33,21 @@ void UserManager::authenticateUser(QString userName, QString password) {
     }
 }
 
-//handles user sign up requests, upon signal sent from signup form
+//handles user sign up requests, upon signal sent from signup form (slot connected to signal from signup page)
 void UserManager::signUpUser(UserRequest* userRequest) {
     qDebug() << "UserManager: signal recieved! User wants to sign up ";
     qDebug() << "username: " << userRequest->userName;
     qDebug() << "password:" << userRequest->password;
 
 
+
     QString requestedUserName =  userRequest->userName;
 
-    //TODO: KT after done testing, add check that no values inside userRequest are null?
-
+    //check password is 8 chars, with at least on capital letter and one number
+    if(!isStrongPassword(userRequest->password)){
+        //if user password is not strong enough, this signal emited to signup form slot that will display warning to user
+        emit userPasswordNotStrongEnough();
+    }
     //username is taken, send signal to signup page
     if(usernameNuserInfo.contains(requestedUserName)){
         //emit signal
@@ -51,8 +55,9 @@ void UserManager::signUpUser(UserRequest* userRequest) {
         qDebug() << "UserManager: user name is taken signal sent";
 
     }
-    //user signed up
-    else{
+
+    //only sign up user's purposed password is strong and their username is unique
+    if(isStrongPassword(userRequest->password) && !usernameNuserInfo.contains(requestedUserName)){
         //add new users to "database"
         qDebug() << "UserManager: new user: " << requestedUserName;
 
@@ -66,10 +71,34 @@ void UserManager::signUpUser(UserRequest* userRequest) {
     }
 }
 
+
+// static method to check if password is at least 8 charachters and has at least one upper case letter and one number
+bool UserManager::isStrongPassword(QString password) {
+    bool hasUpperCase = false;
+    bool hasNumber = false;
+
+    // Check the length of the password
+    if (password.length() < 8) {
+        return false; // Password is not strong if it's less than 8 characters
+    }
+
+    // Check each character of the password
+    for (QChar ch : password) {
+        if (ch.isUpper()) {
+            hasUpperCase = true;
+        } else if (ch.isDigit()) {
+            hasNumber = true;
+        }
+    }
+
+    // Return true if the password meets all criteria
+    return hasUpperCase && hasNumber;
+}
+
 void UserInfo::addScore(int score) {
     scoreHistory.append(score);
-    UserManager* userManager = (UserManager*)manager;
-    userManager->serialize();
+    UserManager* userManagr = (UserManager*)manager;
+    userManagr->serialize();
 }
 
  void UserInfo::print(const UserInfo* userInfo) {

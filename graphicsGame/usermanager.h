@@ -82,13 +82,16 @@ public:
 
     void deserialize();
 
+    static bool isStrongPassword(QString password);
 //KT: added slot; authenticate user to be called by loginpage wiget upon sign-in button click
+
 signals:
     //signal sent by manager to login page
     void userAuthenticated(UserInfo* user);
     void userAuthenticationFailed();
-    void userNameTaken();
-    void userSignedUp(UserInfo* userInfo);
+    void userNameTaken(); //singal emited to sign up form
+    void userSignedUp(UserInfo* userInfo); //singal emited to sign up form slot, which will display user profile
+    void userPasswordNotStrongEnough();//signal emited to sign up form slot which will display user warining
 
 public slots:
     //responds to login page signal, verifies user

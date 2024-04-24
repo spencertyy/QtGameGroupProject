@@ -60,7 +60,7 @@ public:
     static int drops_collected;
     static int game_score;
     static int missed_droplets;
-    static int gameLevelint;
+    static int *gameLevelint;
     static bool gameOver;
     static QMediaPlayer* soundEffect1;
     static QMediaPlayer* soundEffect2;

@@ -14,6 +14,7 @@ int game1scene::missed_droplets = 0;
 int game1scene::windowHeight = 512;
 int game1scene::windowWidth = 910;
 bool game1scene::gameOver = false;
+// int game1scene::gameLevelint = 300;
 QMediaPlayer* game1scene::soundEffect1 = new QMediaPlayer();
 QMediaPlayer* game1scene::soundEffect2 = new QMediaPlayer();
 QMediaPlayer* game1scene::missingEffect = new QMediaPlayer();
@@ -44,10 +45,10 @@ game1scene::game1scene(UserInfo* userInfo, QObject *parent):QGraphicsScene(paren
 
     // Add labels to the scene
     QGraphicsProxyWidget *dropsCollectedProxy = addWidget(pointsLabel);
-    dropsCollectedProxy->setPos(70, 80);
+    dropsCollectedProxy->setPos(5, 110);
 
     QGraphicsProxyWidget *missedDropletsProxy = addWidget(missedLabel);
-    missedDropletsProxy->setPos(70, 100);
+    missedDropletsProxy->setPos(5, 130);
 
     scoreUpdateTimer->start(100);
 
@@ -64,9 +65,9 @@ game1scene::game1scene(UserInfo* userInfo, QObject *parent):QGraphicsScene(paren
 
     audioOutput1->setVolume(10);
     audioOutput2->setVolume(10);
-    missingOutput->setVolume(50);
+    missingOutput->setVolume(10);
 
-    QPixmap background(":/new/prefix1/images/background.jpg");
+    QPixmap background(":/new/prefix1/images/beijing.jpg");
     background = background.scaled(windowWidth, windowHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     setBackgroundBrush(background);
 
@@ -106,7 +107,8 @@ game1scene::game1scene(UserInfo* userInfo, QObject *parent):QGraphicsScene(paren
         }
 
     });
-    timer->start(300);
+    // std::cout << "Current timer:" << gameLevelint;
+    timer->start(1200);
 
     //set timer to run the two if statments, continouslly check
     QTimer* gameTimer = new QTimer(this);

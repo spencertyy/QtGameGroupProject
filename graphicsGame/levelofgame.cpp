@@ -40,7 +40,7 @@ void levelOfGame::on_mediumButton_clicked()
     game1scene* game = new game1scene(userinfo);
     QGraphicsView* view_obj = new QGraphicsView(game);
     game->setView(view_obj);
-    // game1scene::gameLevelint = 100;
+    // game1scene::gameLevelint = 500;
     view_obj->setFixedSize(910,512);
     view_obj->setHorizontalScrollBarPolicy((Qt::ScrollBarAlwaysOff));
     view_obj->setVerticalScrollBarPolicy((Qt::ScrollBarAlwaysOff));
@@ -55,7 +55,7 @@ void levelOfGame::on_easyButton_clicked()
     game1scene* game = new game1scene(userinfo);
     QGraphicsView* view_obj = new QGraphicsView(game);
     game->setView(view_obj);
-    // game1scene::gameLevelint = 100;
+    // game1scene::gameLevelint = 1000;
     view_obj->setFixedSize(910,512);
     view_obj->setHorizontalScrollBarPolicy((Qt::ScrollBarAlwaysOff));
     view_obj->setVerticalScrollBarPolicy((Qt::ScrollBarAlwaysOff));
