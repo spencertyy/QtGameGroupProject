@@ -185,40 +185,10 @@ void game1scene::updateLabels()
     pointsLabel->setText("Points: " + QString::number(game_score));
     missedLabel->setText("Missed Droplets: " + QString::number(missed_droplets));
 }
-// ... inside your game logic ...
-
-void game1scene::onGameEnded(bool won) {
-    QWidget* parentWidget = this->views().isEmpty() ? nullptr : this->views().first();
-    GameOverDialog *dialog = new GameOverDialog(won,  parentWidget);
-    connect(dialog, &GameOverDialog::restartGame, this, &game1scene::restartGame);
-    connect(dialog, &GameOverDialog::returnToProfile, this, &game1scene::returnToProfile);
-    connect(dialog, &GameOverDialog::viewHistory, this, &game1scene::viewHistory);
-    dialog->exec(); // Use exec for a modal dialog that blocks the rest of the application
-}
-
-
-void game1scene::restartGame() {
-    // Reset all game variables to their initial state.
-    // If using scenes, clear the current scene and set up a new one.
-    // If you have timers, reset them.
-    // Basically, reinitialize everything needed to start the game from scratch.
-
-}
-
-void game1scene::returnToProfile() {
-    // Hide or close the current game window or scene.
-    // Show the profile window. This could be done by emitting a signal that the main application listens to and then shows the profile UI.
-}
-
-void game1scene::viewHistory() {
-    // Again, hide or close the current game window or scene.
-    // Display the history window where you might list past game scores, achievements, etc.
-}
 
 void game1scene::setView(QGraphicsView* view) {
     this->view = view;
 }
-
 
 void game1scene::onGameEnded(bool won) {
     qDebug() << "game1scene onGameEnded";

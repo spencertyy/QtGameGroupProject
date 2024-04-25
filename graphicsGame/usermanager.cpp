@@ -3,14 +3,9 @@
 //User data is stored on disk
 UserManager::UserManager(QObject *parent) : QObject(parent) {
      qDebug() << "UserManager object created";
-<<<<<<< HEAD
-=======
-
     // Get the current working directory
     PATH = QDir::currentPath();
     qDebug() << "UserManager Path to user data saved on disk: " + PATH;
-
->>>>>>> fce1818 (now uses relative path to save user data.)
     deserialize();
 }
 

@@ -46,11 +46,6 @@ public:
     void restartGame();
     void returnToProfile();
     void viewHistory();
-
-    void onGameEnded(bool won);
-    void restartGame();
-    void returnToProfile();
-    void viewHistory();
     void setView(QGraphicsView* view);
     void cleanup();
 
