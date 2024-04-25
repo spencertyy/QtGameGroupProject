@@ -14,7 +14,7 @@
 #include <QJsonObject> //creates Json Objects
 #include <qjsondocument>
 #include <QCoreApplication> //used to get relative path
-
+#include <QDir>
 
 struct UserRequest {
     QString userName;
@@ -68,20 +68,14 @@ struct UserInfo {
 class UserManager : public QObject {
     Q_OBJECT
 public:
+    QString PATH;
+    QMap<QString, UserInfo*> usernameNuserInfo;
     explicit UserManager(QObject *parent = nullptr);
     ~UserManager();
-
-    //KT TODO: add users and password to this list  during sign up process
-    QMap<QString, UserInfo*> usernameNuserInfo;
-
     void print();
-
     void serialize();
-
     void deserialize();
-
     static bool isStrongPassword(QString password);
-//KT: added slot; authenticate user to be called by loginpage wiget upon sign-in button click
 
 signals:
     //signal sent by manager to login page

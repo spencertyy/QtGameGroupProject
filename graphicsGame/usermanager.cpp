@@ -1,9 +1,16 @@
 #include "usermanager.h"
-#define PATH "/Users/k80l80d/Desktop/GraphicsGameData"
 
-
+//User data is stored on disk
 UserManager::UserManager(QObject *parent) : QObject(parent) {
      qDebug() << "UserManager object created";
+<<<<<<< HEAD
+=======
+
+    // Get the current working directory
+    PATH = QDir::currentPath();
+    qDebug() << "UserManager Path to user data saved on disk: " + PATH;
+
+>>>>>>> fce1818 (now uses relative path to save user data.)
     deserialize();
 }
 
@@ -139,7 +146,7 @@ void UserManager::serialize() {
         if (picExists) {
             QFile picFile(QString(PATH) + QString("/") + QString(user->username) + QString(".png"));
             if (!picFile.open(QFile::WriteOnly | QIODevice::Text)) {
-                if (!picFile.open(QFile::WriteOnly | QIODevice::Text | QIODevice::NewOnly)) {
+                if (!picFile.open(QFile::WriteOnly | QIODevice::Text |  QIODevice::Truncate)) {
                     qDebug() << "Failed to open or create file for writing.";
                     continue;
                 }
@@ -180,6 +187,15 @@ void UserManager::serialize() {
 
 void UserManager::deserialize() {
     QFile file(QString(PATH) + QString("/userMapping.json"));
+
+    //no users have signed up yet, so don't try to read in user data file
+    if(!QFile::exists(PATH + QString("/userMapping.json"))){
+        qDebug() << "No users data yet. Create a new file to store data once user sign up and close application.";
+        return;
+    }
+
+
+    //reading in user datat from the file
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "Failed to open file for reading.";
         return;
