@@ -69,17 +69,27 @@ void signupdialog::setupUI() {
 }
 
 void signupdialog::connectSignals() {
-    connect(submitButton, &QPushButton::clicked, this, &signupdialog::onSubmitButtonClicked);
+
+    //buttons clicked, trigger these responses
+
     connect(cancelButton, &QPushButton::clicked, this, &signupdialog::reject);
     connect(uploadButton, &QPushButton::clicked, this, &signupdialog::onUploadButtonClicked);
+
+
    // connect(submitButton, &QLineEdit::textChanged, this, &SignUpDialog::checkPasswordValidity);
     //sender, signal, reciever, action
 
     //handles user request for signup
-    connect(this, &signupdialog::signUp, userManager, &UserManager::signUpUser);
+    //when the submit button is clicked, it triggers the on submit button handler, this handler emits user signed up signal to the user manager who responds with user sign up handler
+    connect(submitButton, &QPushButton::clicked, this, &signupdialog::onSubmitButtonClicked); //submit button click triggers, submit button handler, this handler emits signal to user manager requesting user sign up
+    connect(this, &signupdialog::signUp, userManager, &UserManager::signUpUser); //this object will emit signUP() signal to userManager who responds by signingUpUser
 
     //handles when username is already taken, displays warning
+    //when user manager emits userNameTaken signal, this should respond by displaying a warning: username taken
     connect(userManager,&UserManager::userNameTaken, this, &signupdialog::displayUserNameTakenWarning);
+
+    //user manager sends userPasswordNotStrong enough signal to this (sign up dialogue) handler who then displays a warning message that purposed password not strong enoug
+    connect(userManager, &UserManager::userPasswordNotStrongEnough, this, &signupdialog::displayUserNameNotStrongEnough);
 
     //render user profile for new user
     connect(userManager, &UserManager::userSignedUp, this, &signupdialog::showProfilePage);
@@ -89,21 +99,27 @@ void signupdialog::onSubmitButtonClicked() {
     //pipes in username field from form
     QString userName = usernameLineEdit->text();
     QString password = passwordLineEdit->text();
-
+    QString firstName = firstNameLineEdit->text();
+    QString lastName = lastNameLineEdit->text();
+    QDate dob = dobDateEdit->date();
+    // QComboBox *gender = genderComboBox->
+    QPixmap profilePicUpload = profilePictureLabel->pixmap().copy();
+    QString gender = genderComboBox->currentText();
 
     //packages the data, build out user request
     UserRequest* userRequest = new UserRequest();
     userRequest->userName = userName;
+    userRequest->firstName = firstName;
+    userRequest->lastName = lastName;
     userRequest->password = password;
+    userRequest->dob = dob;
+    userRequest->gender = gender;
+    userRequest->pic = profilePicUpload;
 
-    qDebug() << "SignUpDialogue: user requesting to be signed up";
-    qDebug() << "username: " << userName;
-    qDebug() << "password:" << password;
-
+    //checkPasswordValidity();
     //signal recieved by user manager where it can be fulfilled or denied
-    emit signUp(userRequest);
 
-    checkPasswordValidity();
+    emit signUp(userRequest);
     //send signal to user manager, user wants to sign up! Is this an okay user name & password?
 
 }
@@ -116,35 +132,9 @@ void signupdialog::onUploadButtonClicked() {
 }
 
 
-// And implement the slot to check validity
-void signupdialog::checkPasswordValidity() {
-    // //pipes in data from form
-    // QString password = passwordLineEdit->text();
-
-    // //packages the data
-    // userRequest.password = password;
-    // qDebug() << "SignUpDialogue: user password" << password;
-
-
-    //KT TODO: uncomment when done testing. Maybe move logic to UserHandler?
-    // int pos = 0;
-    // if(passwordValidator->validate(password, pos) != QValidator::Acceptable) {
-
-    //     QMessageBox::warning(this, "Invalid Password", "Password must contain at least one number, one uppercase letter, one lowercase letter, and be at least 8 characters long, and no punctuation");
-    //     passwordLineEdit->setStyleSheet("QLineEdit { border: 1px solid red; }");
-
-    // } else {
-    //     showProfilePage();
-    // }
-    //  //delete passwordValidator;
-}
-
-
-
-
 //recieves signal from user manager of new user, render their profile page
 void signupdialog::showProfilePage(UserInfo* userInfo) {
-    qDebug() <<"show profile page.";
+    qDebug() <<"Signup Dialolgue: show profile page.";
     profile* profilePage = new profile(userInfo);
     profilePage->show();
     this->close();  // 隐藏当前对话框，而不是关闭它
@@ -156,4 +146,11 @@ void signupdialog::displayUserNameTakenWarning(){
 
     //create warking display
     QMessageBox::warning(this, "Warning", "username taken");
+}
+
+void signupdialog::displayUserNameNotStrongEnough(){
+    qDebug() << "SignupDialogue: password not strong enough!";
+
+    //create warking display
+    QMessageBox::warning(this, "Warning", "must contain at least 8 chars, with at least one capital letter and one number");
 }

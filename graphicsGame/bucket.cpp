@@ -9,7 +9,7 @@ bucket::bucket(QGraphicsItem *parent):QGraphicsPixmapItem(parent){
 
 
 void bucket::keyPressEvent(QKeyEvent *event){
-    int stepSize = 10;
+    int stepSize = 25;
 
     if(event->key()== Qt::Key_Left){
         setPos(x()- stepSize,y());

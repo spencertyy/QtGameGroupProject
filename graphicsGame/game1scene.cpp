@@ -1,24 +1,31 @@
 #include "game1scene.h"
+#include "gameoverdialog.h"
+#include "levelofgame.h"
 #include "cloud.h"
 #include "droplet.h"
 #include "bucket.h"
-#include "gameoverdialog.h"
 #include <iostream>
-#include <QLabel>
-#include <QGraphicsProxyWidget>
-
+#include "profile.h"
+#include "history.h"
 
 int game1scene::drops_collected = 0;
 int game1scene::game_score = 0;
 int game1scene::missed_droplets = 0;
 int game1scene::windowHeight = 512;
 int game1scene::windowWidth = 910;
+bool game1scene::gameOver = false;
+// int game1scene::gameLevelint = 300;
 QMediaPlayer* game1scene::soundEffect1 = new QMediaPlayer();
 QMediaPlayer* game1scene::soundEffect2 = new QMediaPlayer();
 QMediaPlayer* game1scene::missingEffect = new QMediaPlayer();
 
 
-game1scene::game1scene(QObject *parent):QGraphicsScene(parent) {
+game1scene::game1scene(UserInfo* userInfo, QObject *parent):QGraphicsScene(parent) {
+    // this->level = level;
+
+    this->userinfo = userInfo;
+
+    // gameLevelint = 100;
 
     QTimer* scoreUpdateTimer = new QTimer(this);
     connect(scoreUpdateTimer, &QTimer::timeout, this, &game1scene::updateLabels);
@@ -38,12 +45,10 @@ game1scene::game1scene(QObject *parent):QGraphicsScene(parent) {
 
     // Add labels to the scene
     QGraphicsProxyWidget *dropsCollectedProxy = addWidget(pointsLabel);
-    dropsCollectedProxy->setPos(70, 80);
+    dropsCollectedProxy->setPos(5, 110);
 
     QGraphicsProxyWidget *missedDropletsProxy = addWidget(missedLabel);
-    missedDropletsProxy->setPos(70, 100);
-
-
+    missedDropletsProxy->setPos(5, 130);
 
     scoreUpdateTimer->start(100);
 
@@ -57,13 +62,12 @@ game1scene::game1scene(QObject *parent):QGraphicsScene(parent) {
     soundEffect1->setSource(QUrl("qrc:/new/prefix1/RaningMen.m4a"));
     soundEffect2->setSource(QUrl("qrc:/new/prefix2/HALLELUJAHH.m4a"));
     missingEffect->setSource(QUrl("qrc:/new/prefix3/MissingEffect.m4a"));
-    audioOutput1->setVolume(50);
-    audioOutput2->setVolume(50);
-    missingOutput->setVolume(50);
 
+    audioOutput1->setVolume(10);
+    audioOutput2->setVolume(10);
+    missingOutput->setVolume(10);
 
-
-    QPixmap background(":/new/prefix1/images/background.jpg");
+    QPixmap background(":/new/prefix1/images/beijing.jpg");
     background = background.scaled(windowWidth, windowHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     setBackgroundBrush(background);
 
@@ -93,36 +97,38 @@ game1scene::game1scene(QObject *parent):QGraphicsScene(parent) {
     //generating droplets
     QTimer* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, [this, clouds]() {
-        if (!clouds.isEmpty()) {
+        if (!clouds.isEmpty() && !gameOver) {
             int cloudIndex = rand() % clouds.size();  // 随机选择一朵云
             cloud* selectedCloud = clouds.at(cloudIndex);
             int dropletX = selectedCloud->x() + rand() % selectedCloud->pixmap().width();
-            droplet* droplets = new droplet();
+            droplet* droplets = new droplet(&gameOver);
             droplets->setPos(dropletX, selectedCloud->y() + selectedCloud->pixmap().height());
             addItem(droplets);
         }
 
     });
-     timer->start(300);
+    // std::cout << "Current timer:" << gameLevelint;
+    timer->start(1200);
 
-
-     QTimer* gameTimer = new QTimer(this);
-     connect(gameTimer, &QTimer::timeout, [this]() {
+    //set timer to run the two if statments, continouslly check
+    QTimer* gameTimer = new QTimer(this);
+    connect(gameTimer, &QTimer::timeout, [this]() {
 
          // std::cout << "Current missed droplets: " << missed_droplets << "\n";
-         if (game_score >= 150) {
-             winningGame();
-         }
-
-         if (missed_droplets >= 5) {
-             loosingGame();
-         }
+        if (gameOver) {
+          // game is already over, and dialog is displayed
+        } else if (game_score >= 150) {
+            bool didWin = true;
+            onGameEnded(didWin);
+            //end this widget
+        } else if (missed_droplets >= 5) {
+            bool didWin = false;
+            onGameEnded(didWin);
+             //end this widget
+        }
      });
 
      gameTimer->start(100);
-
-
-
 }
 
 void game1scene::checkMissedDroplets(){
@@ -135,40 +141,42 @@ void game1scene::checkMissedDroplets(){
             if (dropletItem->y() > windowHeight) {
                 missingEffect->play();
                 missed_droplets++;
-                // scene()->removeItem(this);
+                removeItem(dropletItem);
+                //scene->removeItem(dropletItem);
                 // delete this;
             }
         }
     }
 }
 
-
-void game1scene::winningGame(){
-    int value = 1;
-    emit winningSignal(value);
+//results window should listen for the winning game signal to display
+void game1scene::winningGame(){ 
+    emit winningSignal(game_score);
     std::cout << "Congradulations! you win the game!" << "\n";
+
         //TODO: winning game widget
 }
 
+//results window should listen for this signal
 void game1scene::loosingGame(){
-    int value = 0;
-    emit loosingSignal(value);
+    emit loosingSignal(game_score);
         std::cout << "You lose the game" << "\n";
         //TODO: loosing game widget
 
 }
 
-int game1scene::gameLevel(std::string level){
-    if (level == "easy"){
-        return 100;
-    }
-    else if (level == "medium"){
-        return 200;
-    }
-    else {
-        return 300;
-    }
-}
+
+// int game1scene::gameLevel(){
+//     if (gameLevelint == 1){
+//         return 100;
+//     }
+//     else if (gameLevelint == 2){
+//         return 200;
+//     }
+//     else {
+//         return 300;
+//     }
+// }
 
 
 
@@ -177,19 +185,46 @@ void game1scene::updateLabels()
     pointsLabel->setText("Points: " + QString::number(game_score));
     missedLabel->setText("Missed Droplets: " + QString::number(missed_droplets));
 }
-// ... inside your game logic ...
+
+void game1scene::setView(QGraphicsView* view) {
+    this->view = view;
+}
 
 void game1scene::onGameEnded(bool won) {
+    qDebug() << "game1scene onGameEnded";
+    gameOver = true;
+
     QWidget* parentWidget = this->views().isEmpty() ? nullptr : this->views().first();
-    GameOverDialog *dialog = new GameOverDialog(won,  parentWidget);
+
+    bool isGuest = (userinfo == nullptr);
+    GameOverDialog *dialog = new GameOverDialog(won, isGuest, parentWidget);
+    if (!isGuest) {
+        userinfo->addScore(game_score);
+    }
+
+    this->view->close();
+
+
     connect(dialog, &GameOverDialog::restartGame, this, &game1scene::restartGame);
     connect(dialog, &GameOverDialog::returnToProfile, this, &game1scene::returnToProfile);
     connect(dialog, &GameOverDialog::viewHistory, this, &game1scene::viewHistory);
     dialog->exec(); // Use exec for a modal dialog that blocks the rest of the application
 }
 
+void game1scene::cleanup() {
+    drops_collected = 0;
+    game_score = 0;
+    missed_droplets = 0;
+    gameOver = false;
+    delete this;
+}
 
 void game1scene::restartGame() {
+    qDebug() << "game scene: restart game";
+    levelOfGame* levelScene = new levelOfGame(userinfo);
+    cleanup();
+    levelScene->show();
+
     // Reset all game variables to their initial state.
     // If using scenes, clear the current scene and set up a new one.
     // If you have timers, reset them.
@@ -197,13 +232,26 @@ void game1scene::restartGame() {
 
 }
 
+
 void game1scene::returnToProfile() {
+    qDebug() << "game scene: return to profile";
+    profile *profileWindow = new profile(userinfo);
+    cleanup();
+    profileWindow->setWindowTitle("Profile");
+    profileWindow->show();
     // Hide or close the current game window or scene.
-    // Show the profile window. This could be done by emitting a signal that the main application listens to and then shows the profile UI.
+    // Show the profile window. This could be done by emitting a signal that the main application listens to and then shows the profile UI*/.
 }
 
 void game1scene::viewHistory() {
-    // Again, hide or close the current game window or scene.
-    // Display the history window where you might list past game scores, achievements, etc.
+    qDebug() << "game scene: view history";
+    //TODO: show text Edit widget, add records there
+    history* History = new history(userinfo);
+    cleanup();
+    History->setWindowTitle("Profile");
+    History->show();
 }
+
+
+
 

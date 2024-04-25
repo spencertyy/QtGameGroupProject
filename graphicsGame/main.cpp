@@ -17,7 +17,7 @@
 
 #include "profile.h"
 #include "usermanager.h"
-
+#include "levelofgame.h"
 int  main(int argc, char **argv)
 {
     QApplication app (argc, argv);
@@ -40,36 +40,37 @@ int  main(int argc, char **argv)
     loginWindow->show();
 
 
-
-    game1scene *scene = new game1scene();
-    QGraphicsView* view_obj = new QGraphicsView(scene);
-
-    view_obj->setFixedSize(910,512);
-
-    view_obj->setHorizontalScrollBarPolicy((Qt::ScrollBarAlwaysOff));
-    view_obj->setVerticalScrollBarPolicy((Qt::ScrollBarAlwaysOff));
-    // view_obj->show();
-
-
     UserManager* userManager = new UserManager();
 
     // Slots to handle button clicks should close login window and show game view
     QObject::connect(loginButton, &QPushButton::clicked, [&](){
+        loginWindow->close();
         loginPage* myLoginPage = new loginPage(userManager);
         myLoginPage->show();
-        loginWindow->close();
         //view_obj->show();
     });
 
+    //user clicks "sign up", takes them to sign-up dialogue
     QObject::connect(signupButton, &QPushButton::clicked, [&](){
+        loginWindow->close();
         signupdialog* signUpDialog = new signupdialog(userManager);
         //KT: Don't think we need this line anymore? signUpDialog->setupDatabase(); // Assuming setupDatabase is safe to call multiple times
         signUpDialog->exec(); // Show the sign-up dialog modally
         //view_obj->show();
     });
 
+    //user plays a guest, user passed in is null
     QObject::connect(playAsGuestButton, &QPushButton::clicked, [&](){
-         view_obj->show();
+        loginWindow->close();
+        //TODO: KT: add game scene constructor that does not need a user
+        // game1scene *scene = new game1scene();
+        levelOfGame* levelScene = new levelOfGame(nullptr);
+        levelScene->show();
+        // QGraphicsView* view_obj = new QGraphicsView(levelScene);
+        // view_obj->setFixedSize(910,512);
+        // view_obj->setHorizontalScrollBarPolicy((Qt::ScrollBarAlwaysOff));
+        // view_obj->setVerticalScrollBarPolicy((Qt::ScrollBarAlwaysOff));
+        // view_obj->show();
     });
     return app.exec();
 }
