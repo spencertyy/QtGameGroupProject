@@ -1,4 +1,4 @@
-# CS6018-Group-Project
+# CS6015-Group-Project
 
 ## Team Members
 
