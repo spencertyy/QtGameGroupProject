@@ -5,8 +5,7 @@
 #include <QKeyEvent>
 #include <QObject>
 #include <QGraphicsScene>
-
-
+#include <QTimer>
 
 class bucket : public QObject, public QGraphicsPixmapItem
 {
@@ -14,7 +13,16 @@ class bucket : public QObject, public QGraphicsPixmapItem
 
 public:
     bucket(QGraphicsItem *parent = nullptr);
-    void keyPressEvent(QKeyEvent *event) override;
+    void setMovingLeft(bool v)  { movingLeft = v; }
+    void setMovingRight(bool v) { movingRight = v; }
+
+private slots:
+    void updateMovement();
+
+private:
+    bool movingLeft = false;
+    bool movingRight = false;
+    QTimer *moveTimer;
 };
 
 #endif // BUCKET_H

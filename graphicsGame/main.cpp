@@ -70,6 +70,13 @@ int  main(int argc, char **argv)
 
     QObject::connect(playAsGuestButton, &QPushButton::clicked, [&](){
          view_obj->show();
+         loginWindow->hide();
     });
+
+    QObject::connect(scene, &game1scene::returnToLogin, [&](){
+        view_obj->hide();
+        loginWindow->show();
+    });
+
     return app.exec();
 }

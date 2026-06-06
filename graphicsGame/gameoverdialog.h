@@ -5,12 +5,13 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QVector>
 
 class GameOverDialog : public QDialog {
     Q_OBJECT
 
 public:
-    explicit GameOverDialog(bool won, QWidget *parent = nullptr);
+    explicit GameOverDialog(int score, const QVector<int>& allScores, QWidget *parent = nullptr);
 
 signals:
     void restartGame();
@@ -24,7 +25,7 @@ private slots:
     void onCloseClicked();
 
 private:
-    void setupUi(bool won);
+    void setupUi(int score, const QVector<int>& allScores);
 };
 
 #endif // GAMEOVERDIALOG_H

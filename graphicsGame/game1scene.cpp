@@ -2,10 +2,16 @@
 #include "cloud.h"
 #include "droplet.h"
 #include "bucket.h"
+#include "profile.h"
+#include "history.h"
+
 #include "gameoverdialog.h"
 #include <iostream>
 #include <QLabel>
 #include <QGraphicsProxyWidget>
+#include <QPushButton>
+#include <QApplication>
+#include <algorithm>
 
 
 int game1scene::drops_collected = 0;
@@ -13,41 +19,56 @@ int game1scene::game_score = 0;
 int game1scene::missed_droplets = 0;
 int game1scene::windowHeight = 512;
 int game1scene::windowWidth = 910;
+int game1scene::timeRemaining = 120;
 QMediaPlayer* game1scene::soundEffect1 = new QMediaPlayer();
 QMediaPlayer* game1scene::soundEffect2 = new QMediaPlayer();
 QMediaPlayer* game1scene::missingEffect = new QMediaPlayer();
+QVector<int> game1scene::scoreHistory;
 
 
 game1scene::game1scene(QObject *parent):QGraphicsScene(parent) {
 
-    QTimer* scoreUpdateTimer = new QTimer(this);
-    connect(scoreUpdateTimer, &QTimer::timeout, this, &game1scene::updateLabels);
+    drops_collected = 0;
+    game_score = 0;
+    missed_droplets = 0;
+    timeRemaining = 60;
+    gameEnded = false;
 
-    setSceneRect(0,0,908, 510);
+    setSceneRect(0, 0, 908, 510);
 
+    // Score and missed labels
     pointsLabel = new QLabel();
     missedLabel = new QLabel();
     pointsLabel->setFont(QFont("Arial", 16));
     missedLabel->setFont(QFont("Arial", 16));
-
     pointsLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     missedLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
-    // Set initial text for the labels
+    // 倒计时标签，和其他标签样式一致
+    timerLabel = new QLabel();
+    timerLabel->setFont(QFont("Arial", 16));
+    timerLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+
     updateLabels();
 
-    // Add labels to the scene
     QGraphicsProxyWidget *dropsCollectedProxy = addWidget(pointsLabel);
-    dropsCollectedProxy->setPos(70, 80);
+    dropsCollectedProxy->setPos(5, 110);
 
     QGraphicsProxyWidget *missedDropletsProxy = addWidget(missedLabel);
-    missedDropletsProxy->setPos(70, 100);
+    missedDropletsProxy->setPos(5, 130);
 
+    QGraphicsProxyWidget *timerProxy = addWidget(timerLabel);
+    timerProxy->setPos(5, 150);
 
+    // 退出按钮：回到登录页
+    QPushButton *exitBtn = new QPushButton("Exit");
+    exitBtn->setFixedSize(70, 30);
+    exitBtn->setStyleSheet("background-color: #cc3333; color: white; font-weight: bold; border-radius: 4px;");
+    connect(exitBtn, &QPushButton::clicked, this, &game1scene::returnToLogin);
+    QGraphicsProxyWidget *exitProxy = addWidget(exitBtn);
+    exitProxy->setPos(windowWidth - 80, 10);
 
-    scoreUpdateTimer->start(100);
-
-    // soundEffect1 = new QMediaPlayer(this);
+    // 音效
     QAudioOutput* audioOutput1 = new QAudioOutput;
     QAudioOutput* audioOutput2 = new QAudioOutput;
     QAudioOutput* missingOutput = new QAudioOutput;
@@ -61,149 +82,131 @@ game1scene::game1scene(QObject *parent):QGraphicsScene(parent) {
     audioOutput2->setVolume(50);
     missingOutput->setVolume(50);
 
-
-
-    QPixmap background(":/new/prefix1/images/background.jpg");
+    QPixmap background(":/new/prefix1/images/beijing.jpg");
     background = background.scaled(windowWidth, windowHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     setBackgroundBrush(background);
 
-    //add the bucket
-    bucket *bucketItem = new bucket();
-    bucketItem->setPos((910 - bucketItem->pixmap().width()) / 2, 512 - bucketItem->pixmap().height()); // Position at bottom center
-    bucketItem->setFlag(QGraphicsItem::ItemIsFocusable);
-    bucketItem->setFocus();
+    // 水桶
+    bucketItem = new bucket();
+    bucketItem->setPos((910 - bucketItem->pixmap().width()) / 2, 512 - bucketItem->pixmap().height());
     addItem(bucketItem);
 
+    // 3 朵云
     QList<cloud*> clouds;
-
-    //add 3 cloud on different pos
     for (int i = 0; i < 3; ++i) {
         cloud* cloudItem = new cloud();
-        int x_position = 100 + i * 250 - 50 ;
-        cloudItem->setPos(x_position, 7);
+        cloudItem->setPos(100 + i * 250 - 50, 7);
         addItem(cloudItem);
         clouds.append(cloudItem);
     }
 
-    QTimer* missedDropletTimer = new QTimer(this);
-    connect(missedDropletTimer, &QTimer::timeout, this, &game1scene::checkMissedDroplets);
-    missedDropletTimer->start(300);
+    // 清理超出屏幕的水滴（每 300ms）
+    QTimer* cleanupTimer = new QTimer(this);
+    connect(cleanupTimer, &QTimer::timeout, this, &game1scene::checkMissedDroplets);
+    cleanupTimer->start(300);
 
-
-    //generating droplets
-    QTimer* timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, [this, clouds]() {
-        if (!clouds.isEmpty()) {
-            int cloudIndex = rand() % clouds.size();  // 随机选择一朵云
-            cloud* selectedCloud = clouds.at(cloudIndex);
-            int dropletX = selectedCloud->x() + rand() % selectedCloud->pixmap().width();
-            droplet* droplets = new droplet();
-            droplets->setPos(dropletX, selectedCloud->y() + selectedCloud->pixmap().height());
-            addItem(droplets);
-        }
-
+    // 生成水滴（每 300ms）
+    QTimer* spawnTimer = new QTimer(this);
+    connect(spawnTimer, &QTimer::timeout, [this, clouds]() {
+        if (gameEnded || clouds.isEmpty()) return;
+        int cloudIndex = rand() % clouds.size();
+        cloud* selectedCloud = clouds.at(cloudIndex);
+        int dropletX = selectedCloud->x() + rand() % selectedCloud->pixmap().width();
+        droplet* d = new droplet();
+        d->setPos(dropletX, selectedCloud->y() + selectedCloud->pixmap().height());
+        addItem(d);
     });
-     timer->start(300);
+    spawnTimer->start(300);
 
+    // 得分刷新（每 100ms）
+    QTimer* labelTimer = new QTimer(this);
+    connect(labelTimer, &QTimer::timeout, this, &game1scene::updateLabels);
+    labelTimer->start(100);
 
-     QTimer* gameTimer = new QTimer(this);
-     connect(gameTimer, &QTimer::timeout, [this]() {
-
-         // std::cout << "Current missed droplets: " << missed_droplets << "\n";
-         if (game_score >= 150) {
-             winningGame();
-         }
-
-         if (missed_droplets >= 5) {
-             loosingGame();
-         }
-     });
-
-     gameTimer->start(100);
-
-
-
+    // 倒计时（每 1 秒）
+    QTimer* countdownTimer = new QTimer(this);
+    connect(countdownTimer, &QTimer::timeout, this, &game1scene::updateCountdown);
+    countdownTimer->start(1000);
 }
 
-void game1scene::checkMissedDroplets(){
-    // std::cout << "check function being called" << "\n";
-    foreach(QGraphicsItem *item, items()) {
-        droplet* dropletItem = dynamic_cast<droplet*>(item);
-        if (dropletItem) {
+void game1scene::keyPressEvent(QKeyEvent *event) {
+    if (!bucketItem) return;
+    if (event->key() == Qt::Key_Left)  bucketItem->setMovingLeft(true);
+    if (event->key() == Qt::Key_Right) bucketItem->setMovingRight(true);
+}
 
-            // Check missing by reaching out of bound
-            if (dropletItem->y() > windowHeight) {
-                missingEffect->play();
-                missed_droplets++;
-                // scene()->removeItem(this);
-                // delete this;
-            }
+void game1scene::keyReleaseEvent(QKeyEvent *event) {
+    if (!bucketItem) return;
+    if (event->key() == Qt::Key_Left)  bucketItem->setMovingLeft(false);
+    if (event->key() == Qt::Key_Right) bucketItem->setMovingRight(false);
+}
+
+void game1scene::updateCountdown() {
+    if (gameEnded) return;
+    timeRemaining--;
+    int minutes = timeRemaining / 60;
+    int seconds = timeRemaining % 60;
+    timerLabel->setText(QString("%1:%2").arg(minutes).arg(seconds, 2, 10, QChar('0')));
+    if (timeRemaining <= 0) {
+        endGame();
+    }
+}
+
+void game1scene::checkMissedDroplets() {
+    foreach (QGraphicsItem *item, items()) {
+        droplet* d = dynamic_cast<droplet*>(item);
+        if (d && d->y() > windowHeight) {
+            missed_droplets++;
+            removeItem(d);
+            d->deleteLater();
         }
     }
 }
 
+void game1scene::endGame() {
+    if (gameEnded) return;
+    gameEnded = true;
 
-void game1scene::winningGame(){
-    int value = 1;
-    emit winningSignal(value);
-    std::cout << "Congradulations! you win the game!" << "\n";
-        //TODO: winning game widget
-}
+    scoreHistory.append(drops_collected);
 
-void game1scene::loosingGame(){
-    int value = 0;
-    emit loosingSignal(value);
-        std::cout << "You lose the game" << "\n";
-        //TODO: loosing game widget
-
-}
-
-int game1scene::gameLevel(std::string level){
-    if (level == "easy"){
-        return 100;
-    }
-    else if (level == "medium"){
-        return 200;
-    }
-    else {
-        return 300;
-    }
-}
-
-
-
-void game1scene::updateLabels()
-{
-    pointsLabel->setText("Points: " + QString::number(game_score));
-    missedLabel->setText("Missed Droplets: " + QString::number(missed_droplets));
-}
-// ... inside your game logic ...
-
-void game1scene::onGameEnded(bool won) {
     QWidget* parentWidget = this->views().isEmpty() ? nullptr : this->views().first();
-    GameOverDialog *dialog = new GameOverDialog(won,  parentWidget);
+    GameOverDialog *dialog = new GameOverDialog(drops_collected, scoreHistory, parentWidget);
     connect(dialog, &GameOverDialog::restartGame, this, &game1scene::restartGame);
     connect(dialog, &GameOverDialog::returnToProfile, this, &game1scene::returnToProfile);
     connect(dialog, &GameOverDialog::viewHistory, this, &game1scene::viewHistory);
-    dialog->exec(); // Use exec for a modal dialog that blocks the rest of the application
+    dialog->exec();
 }
 
+int game1scene::gameLevel(std::string level) {
+    if (level == "easy") return 100;
+    else if (level == "medium") return 200;
+    else return 300;
+}
+
+void game1scene::updateLabels() {
+    pointsLabel->setText("Points: " + QString::number(game_score));
+    missedLabel->setText("Missed Droplets: " + QString::number(missed_droplets));
+    timerLabel->setText(QString("Time: %1:%2")
+        .arg(timeRemaining / 60)
+        .arg(timeRemaining % 60, 2, 10, QChar('0')));
+}
 
 void game1scene::restartGame() {
-    // Reset all game variables to their initial state.
-    // If using scenes, clear the current scene and set up a new one.
-    // If you have timers, reset them.
-    // Basically, reinitialize everything needed to start the game from scratch.
-
+    drops_collected = 0;
+    game_score = 0;
+    missed_droplets = 0;
+    timeRemaining = 60;
+    gameEnded = false;
 }
 
 void game1scene::returnToProfile() {
-    // Hide or close the current game window or scene.
-    // Show the profile window. This could be done by emitting a signal that the main application listens to and then shows the profile UI.
+    profile *profileWindow = new profile(nullptr, nullptr);
+    profileWindow->setWindowTitle("Profile");
+    profileWindow->show();
 }
 
 void game1scene::viewHistory() {
-    // Again, hide or close the current game window or scene.
-    // Display the history window where you might list past game scores, achievements, etc.
+    history* h = new history();
+    h->setWindowTitle("History");
+    h->show();
 }
-
