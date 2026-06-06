@@ -45,7 +45,7 @@ void loginPage::displayUserProfile(UserInfo* userInfo){
     qDebug() << "Login Page: opening user profile";
     profile* profilePage = new profile(userInfo);
     profilePage->show();// Show the profile page
-    this->close(); // Close the login window
+    this->close(); // Close the login windowc
 
 }
 

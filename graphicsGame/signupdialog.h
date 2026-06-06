@@ -22,6 +22,7 @@
 //#include "profile.h"
 #include <qdebug.h>
 #include <usermanager.h>
+#include <QPixmap>
 class signupdialog : public QDialog {
     Q_OBJECT
 
@@ -54,13 +55,15 @@ public:
     void checkPasswordValidity();
     void onSubmitButtonClicked();
 
-
+//signals emited
 signals:
     void signUp(UserRequest* userRequest);
 
+//responses
 private slots:
-    void displayUserNameTakenWarning();
-    void showProfilePage(UserInfo* userInfo);
+    void displayUserNameTakenWarning(); //this response is trigged by a signal emited from user manager that the purposed username is taken, does not sign up user
+    void displayUserNameNotStrongEnough(); //this response is trigged by a signal emited from the user manager, that checks if user password is strong enough, does not sign up user
+    void showProfilePage(UserInfo* userInfo); //this response is triggered by signal emited by user manager that both username and password is valid
 };
 
 

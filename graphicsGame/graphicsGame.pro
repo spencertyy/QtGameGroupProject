@@ -4,6 +4,7 @@ SOURCES += \
     game1scene.cpp \
     gameoverdialog.cpp \
     history.cpp \
+    levelofgame.cpp \
     loginpage.cpp \
     main.cpp \
     profile.cpp \
@@ -22,6 +23,7 @@ HEADERS += \
     game1scene.h \
     gameoverdialog.h \
     history.h \
+    levelofgame.h \
     loginpage.h \
     profile.h \
     signupdialog.h \
@@ -35,6 +37,7 @@ QMAKE_LFLAGS += -v
 
 FORMS += \
     history.ui \
+    levelofgame.ui \
     loginpage.ui \
     profile.ui
 

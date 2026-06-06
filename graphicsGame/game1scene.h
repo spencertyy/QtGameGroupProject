@@ -7,9 +7,11 @@
 #include <QObject>
 #include <QMediaPlayer>
 #include <QAudioOutput>
-#include <QLabel>
 #include <QVBoxLayout>
+#include "usermanager.h"
 #include <QWidget>
+#include <QDebug>
+#include "levelofgame.h"
 #include <QGraphicsView>
 #include <QVector>
 
@@ -30,7 +32,6 @@ public:
 
     bucket *bucketItem = nullptr;
 
-    game1scene(QObject *parent = nullptr);
     void checkMissedDroplets();
     int gameLevel(std::string level);
     void keyPressEvent(QKeyEvent *event) override;
@@ -42,6 +43,7 @@ public:
     void viewHistory();
     void setUser(UserManager *user);
 
+    QGraphicsView* view;
     static int windowWidth;
     static int windowHeight;
     static int drops_collected;
@@ -61,3 +63,5 @@ private slots:
 };
 
 #endif // GAME1SCENE_H
+
+

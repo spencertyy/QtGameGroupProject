@@ -1,4 +1,6 @@
 #include "game1scene.h"
+#include "gameoverdialog.h"
+#include "levelofgame.h"
 #include "cloud.h"
 #include "droplet.h"
 #include "bucket.h"
@@ -26,7 +28,12 @@ QMediaPlayer* game1scene::missingEffect = new QMediaPlayer();
 QVector<int> game1scene::scoreHistory;
 
 
-game1scene::game1scene(QObject *parent):QGraphicsScene(parent) {
+game1scene::game1scene(UserInfo* userInfo, QObject *parent):QGraphicsScene(parent) {
+    // this->level = level;
+
+    this->userinfo = userInfo;
+
+    // gameLevelint = 100;
 
     drops_collected = 0;
     game_score = 0;
@@ -78,9 +85,6 @@ game1scene::game1scene(QObject *parent):QGraphicsScene(parent) {
     soundEffect1->setSource(QUrl("qrc:/new/prefix1/RaningMen.m4a"));
     soundEffect2->setSource(QUrl("qrc:/new/prefix2/HALLELUJAHH.m4a"));
     missingEffect->setSource(QUrl("qrc:/new/prefix3/MissingEffect.m4a"));
-    audioOutput1->setVolume(50);
-    audioOutput2->setVolume(50);
-    missingOutput->setVolume(50);
 
     QPixmap background(":/new/prefix1/images/beijing.jpg");
     background = background.scaled(windowWidth, windowHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
@@ -198,6 +202,7 @@ void game1scene::restartGame() {
     timeRemaining = 60;
     gameEnded = false;
 }
+
 
 void game1scene::returnToProfile() {
     profile *profileWindow = new profile(nullptr, nullptr);

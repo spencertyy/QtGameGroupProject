@@ -3,8 +3,8 @@
 #include "game1scene.h"
 // #include <QRandomGenerator>
 
-droplet::droplet(QGraphicsItem *parent) : QObject(), QGraphicsPixmapItem(parent) {
-
+droplet::droplet(bool* gameOver, QGraphicsItem *parent) : QObject(), QGraphicsPixmapItem(parent) {
+    this->gameOver = gameOver;
     setPixmap(QPixmap(":/new/prefix1/images/water.gif").scaled(30,30));
     QTimer *timer = new QTimer();
     connect(timer, &QTimer::timeout, this ,&droplet::move);
@@ -14,6 +14,9 @@ droplet::droplet(QGraphicsItem *parent) : QObject(), QGraphicsPixmapItem(parent)
 
 
 void droplet::move(){
+    if (*gameOver) {
+        return;
+    }
     if (game1scene::drops_collected >= 20) {
         drop_speed = 16;
     } else if (game1scene::drops_collected >= 15) {
@@ -24,6 +27,8 @@ void droplet::move(){
         drop_speed = 2;
     }
 
+    //drop_speed = 50;
+
     setPos(x(),y() + drop_speed);
 
     QList<QGraphicsItem*> colliding_item = collidingItems();
@@ -32,13 +37,13 @@ void droplet::move(){
         if(bucketItem){
             int randomIndex = rand() % 2;
             if(randomIndex == 0){
-                game1scene::soundEffect1 -> play();
+                 game1scene::soundEffect1 -> play();
             }
-            else{
-                game1scene::soundEffect2 -> play();
+            else {
+                 game1scene::soundEffect2 -> play();
             }
             scene()->removeItem(this);
-            // game1scene::soundEffect1 -> play();
+            //game1scene::soundEffect1 -> play();
             game1scene::drops_collected ++;
             game1scene::game_score += 5;
             deleteLater();

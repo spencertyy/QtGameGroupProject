@@ -75,18 +75,18 @@ void GameOverDialog::setupUi(int score, const QVector<int>& allScores) {
 }
 
 void GameOverDialog::onRestartClicked() {
-    emit restartGame();
     close();
+    emit restartGame();
 }
 
 void GameOverDialog::onReturnClicked() {
-    emit returnToProfile();
     close();
+    emit returnToProfile();
 }
 
 void GameOverDialog::onViewHistoryClicked() {
-    emit viewHistory();
     close();
+    emit viewHistory();
 }
 
 void GameOverDialog::onCloseClicked() {
