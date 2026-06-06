@@ -33,6 +33,7 @@
 
 # build files
 graphicsGame/build/
+graphicsGame/build_homebrew/
 graphicsGame/graphicsGame.pro.user
 
 # mac os stuff
