@@ -1,25 +1,46 @@
-# CS6015-Group-Project
+# CS 6015 — Rain Catcher Game
+
+> A group project for CS 6015 (Software Engineering) at the University of Utah.
+
+![gameplay demo](Kapture%202026-06-05%20at%2019.49.47.gif)
 
 ## Team Members
-
 - Katie Stokes
 - Spencer Tu
 - Terry Cao
-  
-## Project Description
-## Sprint 1
-- A user should be able to sign up, sign in or play as guest.
-- In the Sign up form, the user is asked to enter their: first name, last name, date of birth, gender (optional), profile picture, username and password.
-The username is a unique identifier.
-- When the user logs in, their name and profile picture, and the current date should be displayed.
-- If the date is the user's birthday, the application should send a birthday greetings.
-- The user should be able to view the history of the scores of the game(s) they previously played. The score should be compared to the global best score.
-- The password should consist of at least 8 characters and contain at least one number, upper and lower case letters.
-## Sprint 2
-- Build on assignment 2 (collecting water droplets).
-- Add a counter (Number of collected water droplets) and a score (points).
-- The player must collect 150 points to win the game, each droplet is worth 5 points. 
-- The player looses if 5 water droplets are missed.
-- The rolling speed of the water droplet starts slowly. The speed is doubled after collecting 5 droplets. For instance, if the starting speed is 1x, the - - speed becomes 2x after collecting 5 droplets, then 4x after collecting 10 droplets and so on. The speed should not exceed 16x.
-- Add sound effects when collecting a droplet and another sound when a droplet is missed.
-- Add game level (Easy, Medium, Hard) which can be selected before starting a game. Level can be considered in terms of droplet speed.
+
+## About the Game
+
+Rain Catcher is a Qt-based arcade game where you control a bucket to catch falling water droplets. The game runs for **1 minute** — catch as many droplets as you can before time runs out!
+
+### Features
+- **Timed mode** — 1-minute countdown per round
+- **Leaderboard** — scores are tracked across sessions
+- **Progressive speed** — droplets fall faster as you collect more
+- **Sound effects** — audio feedback on catch and miss
+- **User accounts** — sign up, log in, or play as guest
+- **Birthday greeting** — special message if it's your birthday
+
+## How to Play
+
+- **← →** Arrow keys to move the bucket
+- Catch as many droplets as possible before the timer hits 0
+- View your score and leaderboard ranking at the end
+
+## How to Build
+
+Requires Qt 6 (install via Homebrew on macOS):
+
+```bash
+brew install qt
+
+cd graphicsGame
+qmake graphicsGame.pro
+make -j4
+```
+
+## Course Info
+
+**Course:** CS 6015 — Software Engineering  
+**University:** University of Utah  
+**Semester:** Spring 2024
